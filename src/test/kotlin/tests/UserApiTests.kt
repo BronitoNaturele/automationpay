@@ -19,3 +19,22 @@ class UserApiTests {
         assertNotNull(response.body<UserResponse>().id)
     }
 }
+
+//Теперь в тестах можно переключаться между стендами:
+@Test
+fun testWithStageEnvironment() {
+    val config = EnvironmentConfig.getConfig(Environment.TEST)
+    // используем config.baseUrl и config.authToken в тестах
+}
+
+@Test
+fun testWithLocalEnvironment() {
+    val config = EnvironmentConfig.getConfig(Environment.UAT)
+    // используем config.baseUrl и config.authToken в тестах
+}
+
+@Test
+fun testWithLocalEnvironment() {
+    val config = EnvironmentConfig.getConfig(Environment.PROD)
+    // используем config.baseUrl и config.authToken в тестах
+}

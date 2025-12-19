@@ -1,7 +1,9 @@
 //Классы проверок (Assertions/Validators)
-//ResponseValidator
+//validator.ResponseValidator.ResponseValidator
 //Централизует проверки статусов, схем, полей.
 //Позволяет повторно использовать логику валидации.
+
+package validator.ResponseValidator
 
 class ResponseValidator {
     fun assertStatusCode(response: Response, expected: Int) {
