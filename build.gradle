@@ -13,16 +13,13 @@ repositories {
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    testImplementation 'io.rest-assured:rest-assured:6.0.0'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.21'
     testImplementation 'org.jetbrains.kotlin:kotlin-test:2.2.21'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
-    testImplementation("io.restassured:rest-assured")
-    testImplementation("io.restassured:json-path")
-    testImplementation("io.restassured:xml-path")
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    testImplementation 'io.rest-assured:rest-assured:6.0.0'
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 }
 
