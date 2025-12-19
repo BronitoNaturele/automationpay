@@ -38,3 +38,5 @@ fun testWithLocalEnvironment() {
     val config = EnvironmentConfig.getConfig(Environment.PROD)
     // используем config.baseUrl и config.authToken в тестах
 }
+
+val config = EnvironmentConfig.getConfigFromEnvVar()
