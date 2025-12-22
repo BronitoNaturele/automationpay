@@ -7,12 +7,13 @@ package client
 
 import config.TestConfig
 import io.restassured.RestAssured
+import io.restassured.config.RestAssuredConfig
 import io.restassured.http.ContentType
 import io.restassured.response.Response
 import io.restassured.specification.RequestSpecification
+import io.restassured.config.HttpClientConfig
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import java.time.Duration
 
 class ApiClient(private val config: TestConfig) {
     @PublishedApi
@@ -24,7 +25,14 @@ class ApiClient(private val config: TestConfig) {
 
     init {
         RestAssured.baseURI = config.baseUrl
-        RestAssured.timeout = Duration.ofSeconds(config.timeoutSeconds).toMillis()
+
+        // Настройка таймаутов через RestAssuredConfig
+        val timeoutMillis = config.timeoutSeconds * 1000 // секунды → миллисекунды
+        RestAssured.config = RestAssuredConfig.config()
+            .httpClient(HttpClientConfig.httpClientConfig()
+                .setParam("http.connection.timeout", timeoutMillis)
+                .setParam("http.socket.timeout", timeoutMillis)
+            )
 
         request = RestAssured.given()
             .contentType(ContentType.JSON)
