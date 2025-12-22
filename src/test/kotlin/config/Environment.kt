@@ -2,12 +2,10 @@
 //Логика переключения конфигураций.
 package config
 
-import TestConfig
-
 //enum class Environment — перечисление возможных сред (стендов).
 enum class Environment {
-    TEST, // локальный стенд
-    UAT, // стейдж-стенд
+    TEST, // test стенд
+    UAT, // uat-стенд
     PROD  // продакшн-стенд
 }
 
@@ -17,26 +15,31 @@ object EnvironmentConfig {
         Environment.UAT to "https://uat-pay.av.ru",
         Environment.PROD to "https://pay.av.ru"
     )
-
+        //функция getConfig с именем env и типом Environment, которая возвращает объект типа TestConfig(изфайла TestConfig).
     fun getConfig(env: Environment): TestConfig {
-        val baseUrl = System.getenv("API_BASE_URL") ?: baseUrls[env]
-        val authToken = System.getenv("API_TOKEN") ?: "e26ABDDy9HTV0gFoX1uCwdld9uSSjEYlrV7v0qrs2OfZOONm223XLMLK9GyPDMJFpmMIQLSPkG9XfCzT"
-        return TestConfig(baseUrl!!, authToken)
+        //System — класс из стандартной библиотеки Java/Kotlin, предоставляющий доступ к системным ресурсам;
+        //getenv() — метод, который ищет переменную окружения по имени;
+        //Код пытается получить baseUrl в три этапа, используя оператор ?: («элвис»):
+        //Сначала ищет переменную окружения API_BASE_URL.
+        //Если не нашёл — берёт URL из карты baseUrls по ключу env.
+        //Если и там нет — выбрасывает исключение с описанием ошибки.
+        val baseUrl = System.getenv("API_BASE_URL")
+            ?: baseUrls[env]
+            ?: throw IllegalArgumentException("Base URL не найден в environment: $env")
+
+        val authToken = System.getenv("API_TOKEN")
+            ?: throw IllegalArgumentException("API_TOKEN не задан")
+
+        return TestConfig(baseUrl, authToken)
     }
-}
-
-fun getConfigFromEnvVar(): TestConfig {
-    val envStr = System.getenv("ENV") ?: "LOCAL"
-    val env = Environment.valueOf(envStr)
-    return getConfig(env)
-}
-
-//getConfig(env: Environment) — функция, которая:
-//сначала проверяет переменную окружения API_BASE_URL;
-//если её нет — берёт URL из карты baseUrls по переданному env;
-//создаёт и возвращает объект TestConfig с нужным URL и токеном.
-fun getConfigFromEnvVar(): TestConfig {
-    val envStr = System.getenv("ENV") ?: "TEST"
-    val env = Environment.valueOf(envStr)
-    return getConfig(env)
+    //getConfig(env: Environment) — функция, которая:
+    //сначала проверяет переменную окружения API_BASE_URL;
+    //если её нет — берёт URL из карты baseUrls по переданному env;
+    //создаёт и возвращает объект TestConfig с нужным URL и токеном.
+    fun getConfigFromEnvVar(): TestConfig {
+        val envStr = System.getenv("ENV") ?: "TEST"
+        val env = Environment.values().find { it.name == envStr }
+            ?: throw IllegalArgumentException("Unknown environment: $envStr")
+        return getConfig(env)
+    }
 }

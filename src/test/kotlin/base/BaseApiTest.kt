@@ -8,6 +8,6 @@ import validator.ResponseValidator.ResponseValidator
 package base
 
 open class BaseApiTest {
-    protected val apiClient: ApiClient = ApiClient(TestConfig.baseUrl)
+    protected val apiClient: ApiClient = ApiClient(config.TestConfig.baseUrl)
     protected val validator: ResponseValidator = ResponseValidator()
 }
