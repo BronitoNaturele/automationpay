@@ -14,14 +14,13 @@ import validator.SchemaValidator.PaymentSchemaValidator
 import io.restassured.response.Response
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import com.fasterxml.jackson.databind.ObjectMapper
+import utils.JsonUtils.JsonUtils
 import org.junit.jupiter.api.Assertions.*
 
 class PaymentTests {
     private lateinit var apiClient: ApiClient
     private val paymentValidator = PaymentValidator()
     private val schemaValidator = PaymentSchemaValidator()
-    private val objectMapper = ObjectMapper()
 
     @BeforeEach
     fun setUp() {
@@ -31,28 +30,20 @@ class PaymentTests {
 
     @Test
     fun `get payment methods returns valid response`() {
-        // 1. Отправляем запрос
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
-
-        // 2. Валидируем HTTP-статус и Content-Type
         paymentValidator.assertSuccess(response)
         paymentValidator.assertContentTypeJson(response)
-
-
-        // 3. Валидируем схему ответа
         schemaValidator.validate(response)
 
-        // 4. Десериализуем в DTO и проверяем конкретные значения
-        val paymentResponse: PaymentResponse = objectMapper.readValue(
+
+        // Десериализация через JsonUtils
+        val paymentResponse: PaymentResponse = JsonUtils.fromJson(
             response.asString(),
             PaymentResponse::class.java
         )
 
-        // Проверяем размер массива
         assertEquals(4, paymentResponse.data.size, "Expected 4 payment methods")
-
-        // Проверяем имена
         assertEquals("СБП", paymentResponse.data[0].name)
         assertEquals("Сохраненные способы", paymentResponse.data[1].name)
         assertEquals("Сбер", paymentResponse.data[2].name)
