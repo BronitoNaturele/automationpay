@@ -64,6 +64,10 @@ class ApiClient(private val config: TestConfig) {
     ): Response {
         var spec = request
         headers.forEach { key, value -> spec = spec.header(key, value) }
+        println("=== Текущий URL ===")
+        println(RestAssured.baseURI)  // выведите значение, которое реально используется
+        println("Длина URL: ${RestAssured.baseURI.length}")
+        println("Символ на позиции 22: '${RestAssured.baseURI[22]}'")
         return spec.get(path)
     }
 

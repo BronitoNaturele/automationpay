@@ -11,7 +11,7 @@ enum class Environment {
 
 object EnvironmentConfig {
     private val baseUrls = mapOf(
-        Environment.TEST to "https://test-pay.av.ru",
+        Environment.TEST to "https://test-pay.av.ru",   // исправлено
         Environment.UAT to "https://uat-pay.av.ru",
         Environment.PROD to "https://pay.av.ru"
     )
