@@ -14,6 +14,7 @@ import io.restassured.specification.RequestSpecification //Интерфейс д
 import io.restassured.config.HttpClientConfig //Класс для настройки HTTP‑клиента под Rest‑Assured (Apache HttpClient или OkHttp). Позволяет конфигурировать: пул соединений, SSL/TLS, прокси, таймауты на уровне клиента.
 import com.fasterxml.jackson.databind.ObjectMapper //Главный класс библиотеки Jackson. Отвечает за: сериализацию (Java/Kotlin‑объект → JSON), десериализацию (JSON → Java/Kotlin‑объект).
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule //Расширение для Jackson, добавляющее поддержку Kotlin. Позволяет корректно работать с: data‑классами, nullability (?), свойствами с геттерами/сеттерами, перечислениями (enum).
+import logger.ApiLogger //наш логгер
 
 class ApiClient(private val config: TestConfig) {
     //аннотация (для компилятора). Говорит: «Это API, которое можно использовать внутри модуля, но не снаружи».
@@ -29,6 +30,7 @@ class ApiClient(private val config: TestConfig) {
         .findAndRegisterModules()
 
     private lateinit var request: RequestSpecification
+    private val apiLogger = ApiLogger()
 
     init {
         RestAssured.baseURI = config.baseUrl
@@ -45,6 +47,7 @@ class ApiClient(private val config: TestConfig) {
             .contentType(ContentType.JSON)
             .header("Authorization", "Bearer ${config.authToken}")
             .log().all()
+            .filter(apiLogger)//подключение логгера
     }
 
     fun post(
