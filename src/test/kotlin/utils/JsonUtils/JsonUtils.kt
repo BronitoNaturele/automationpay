@@ -4,28 +4,46 @@
 
 package utils.JsonUtils
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 
-/**
- * Утилиты для работы с JSON (сериализация/десериализация).
- */
+
 object JsonUtils {
     private val mapper = ObjectMapper()
         .registerKotlinModule()
         .findAndRegisterModules()
 
+
     /**
      * Десериализует JSON‑строку в объект заданного типа.
+     * @throws IllegalArgumentException при ошибке десериализации
      */
     fun <T : Any> fromJson(json: String, clazz: Class<T>): T {
-        return mapper.readValue(json, clazz)
+        try {
+            return mapper.readValue(json, clazz)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to deserialize JSON: $json", e)
+        }
     }
 
     /**
      * Сериализует объект в JSON‑строку.
+     * @throws IllegalArgumentException при ошибке сериализации
      */
     fun toJson(obj: Any): String {
-        return mapper.writeValueAsString(obj)
+        try {
+            return mapper.writeValueAsString(obj)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to serialize object: $obj", e)
+        }
+    }
+
+    fun <T> fromJsonWithTypeReference(json: String, typeRef: TypeReference<T>): T {
+        try {
+            return mapper.readValue(json, typeRef)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to deserialize JSON: $json", e)
+        }
     }
 }

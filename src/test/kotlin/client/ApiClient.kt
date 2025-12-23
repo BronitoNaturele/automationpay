@@ -12,22 +12,12 @@ import io.restassured.http.ContentType //Используется для ука�
 import io.restassured.response.Response //Класс, представляющий ответ от сервера. Содержит: статус‑код (statusCode), заголовки (headers), тело ответа (body), cookies и др.
 import io.restassured.specification.RequestSpecification //Интерфейс для настройки запроса до его отправки. Позволяет задать: базовые URI/пути, заголовки, параметры запроса, аутентификацию и др. Часто используется для повторного применения настроек
 import io.restassured.config.HttpClientConfig //Класс для настройки HTTP‑клиента под Rest‑Assured (Apache HttpClient или OkHttp). Позволяет конфигурировать: пул соединений, SSL/TLS, прокси, таймауты на уровне клиента.
-import com.fasterxml.jackson.databind.ObjectMapper //Главный класс библиотеки Jackson. Отвечает за: сериализацию (Java/Kotlin‑объект → JSON), десериализацию (JSON → Java/Kotlin‑объект).
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule //Расширение для Jackson, добавляющее поддержку Kotlin. Позволяет корректно работать с: data‑классами, nullability (?), свойствами с геттерами/сеттерами, перечислениями (enum).
 import logger.ApiLogger //наш логгер
+import utils.JsonUtils.JsonUtils
+import com.fasterxml.jackson.core.type.TypeReference
+
 
 class ApiClient(private val config: TestConfig) {
-    //аннотация (для компилятора). Говорит: «Это API, которое можно использовать внутри модуля, но не снаружи».
-    @PublishedApi
-    //internal — модификатор видимости: поле доступно только в этом модуле (проекте), но не из других библиотек/модулей.
-    //val objectMapper: ObjectMapper — объявляем неизменяемое поле типа ObjectMapper (это главный класс библиотеки Jackson для работы с JSON).
-    //= ObjectMapper() — инициализируем: создаём новый экземпляр ObjectMapper.
-    internal val objectMapper: ObjectMapper = ObjectMapper()
-    //Это цепочка вызовов методов для настройки ObjectMapper:
-    //.registerKotlinModule() — подключает поддержку Kotlin: правильно обрабатывает data class; учитывает nullable‑типы (String?); работает с Kotlin‑перечислениями (enum class).
-    //.findAndRegisterModules() — ищет и подключает дополнительные модули Jackson (например, для работы с Java 8 датами, XML и т. п.). Это полезно, если в проекте используются сложные типы данных.
-        .registerKotlinModule()
-        .findAndRegisterModules()
 
     private lateinit var request: RequestSpecification
     private val apiLogger = ApiLogger()
@@ -35,8 +25,8 @@ class ApiClient(private val config: TestConfig) {
     init {
         RestAssured.baseURI = config.baseUrl
 
-        // Настройка таймаутов через RestAssuredConfig
-        val timeoutMillis = config.timeoutSeconds * 1000 // секунды → миллисекунды
+        // Настройка таймаутов
+        val timeoutMillis = config.timeoutSeconds * 1000
         RestAssured.config = RestAssuredConfig.config()
             .httpClient(HttpClientConfig.httpClientConfig()
                 .setParam("http.connection.timeout", timeoutMillis)
@@ -47,17 +37,30 @@ class ApiClient(private val config: TestConfig) {
             .contentType(ContentType.JSON)
             .header("Authorization", "Bearer ${config.authToken}")
             .log().all()
-            .filter(apiLogger)//подключение логгера
+            .filter(apiLogger)
     }
 
     fun post(
         path: String,
-        body: Any,
+        body: Any?,
         headers: Map<String, String> = emptyMap()
     ): Response {
-        val jsonBody = objectMapper.writeValueAsString(body)
-        var spec = request
-        headers.forEach { key, value -> spec = spec.header(key, value) }
+        if (body == null) {
+            return request.apply {
+                headers.forEach { key, value -> header(key, value) }
+            }.post(path)
+        }
+
+        val jsonBody = try {
+            JsonUtils.toJson(body)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to serialize body: $body", e)
+        }
+
+        val spec = request.apply {
+            headers.forEach { key, value -> header(key, value) }
+        }
+
         return spec.body(jsonBody).post(path)
     }
 
@@ -65,32 +68,33 @@ class ApiClient(private val config: TestConfig) {
         path: String,
         headers: Map<String, String> = emptyMap()
     ): Response {
-        var spec = request
-        headers.forEach { key, value -> spec = spec.header(key, value) }
-
-
-        println("=== Текущий URL ===")
-        println(RestAssured.baseURI)
-        println("Длина URL: ${RestAssured.baseURI.length}")
-
-        // Безопасный вывод символа на позиции 22
-        if (RestAssured.baseURI.length > 22) {
-            println("Символ на позиции 22: '${RestAssured.baseURI[22]}'")
-        } else {
-            println("ВНИМАНИЕ: URL короче 23 символов. Нет символа на позиции 22.")
+        val spec = request.apply {
+            headers.forEach { key, value -> header(key, value) }
         }
-
         return spec.get(path)
     }
 
     fun put(
         path: String,
-        body: Any,
+        body: Any?,
         headers: Map<String, String> = emptyMap()
     ): Response {
-        val jsonBody = objectMapper.writeValueAsString(body)
-        var spec = request
-        headers.forEach { key, value -> spec = spec.header(key, value) }
+        if (body == null) {
+            return request.apply {
+                headers.forEach { key, value -> header(key, value) }
+            }.put(path)
+        }
+
+        val jsonBody = try {
+            JsonUtils.toJson(body)
+        } catch (e: Exception) {
+            throw IllegalArgumentException("Failed to serialize body: $body", e)
+        }
+
+        val spec = request.apply {
+            headers.forEach { key, value -> header(key, value) }
+        }
+
         return spec.body(jsonBody).put(path)
     }
 
@@ -98,12 +102,19 @@ class ApiClient(private val config: TestConfig) {
         path: String,
         headers: Map<String, String> = emptyMap()
     ): Response {
-        var spec = request
-        headers.forEach { key, value -> spec = spec.header(key, value) }
+        val spec = request.apply {
+            headers.forEach { key, value -> header(key, value) }
+        }
         return spec.delete(path)
     }
 
+    /**
+     * Десериализует тело ответа в указанный тип с использованием TypeReference.
+     */
     inline fun <reified T> deserializeResponse(response: Response): T {
-        return objectMapper.readValue(response.asString(), T::class.java)
+        return JsonUtils.fromJsonWithTypeReference(
+            response.asString(),
+            object : TypeReference<T>() {}
+        )
     }
 }

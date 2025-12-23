@@ -4,22 +4,13 @@
 package logger
 
 import io.restassured.filter.Filter
-import io.restassured.filter.FilterContext
+import io.restassured.filter.FilterChain  // Правильный импорт!
 import io.restassured.specification.FilterableRequestSpecification
 import io.restassured.specification.FilterableResponseSpecification
 import io.restassured.response.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-/**
- * Логгер для HTTP‑запросов и ответов в API‑тестах.
- * - Логирует метод, URL, заголовки, тело запроса/ответа, статус и время выполнения.
- * - Использует стандартный вывод (println).
- * - Совместим с:
- *   - Rest-Assured 6.0.0
- *   - JUnit Jupiter 5.10.0
- *   - Kotlin 2.2.21
- */
 class ApiLogger : Filter {
 
     private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
@@ -45,10 +36,10 @@ class ApiLogger : Filter {
     override fun filter(
         requestSpec: FilterableRequestSpecification,
         responseSpec: FilterableResponseSpecification,
-        ctx: FilterContext
+        ctx: FilterChain  // Используем FilterChain
     ): Response {
         logRequest(requestSpec)
-        val response = ctx.next(requestSpec, responseSpec)
+        val response = ctx.next(requestSpec, responseSpec)  // Вызов через FilterChain
         logResponse(response)
         return response
     }
@@ -60,9 +51,10 @@ class ApiLogger : Filter {
 
         println("[API-LOG] [$timestamp] $method $uri")
 
+
         if (logHeaders) {
             requestSpec.headers().asList().forEach { header ->
-                println("  → HEADER: ${header.name}: ${header.value}")
+                println("  → HEADER: ${header.getKey()}: ${header.getValue()}")
             }
         }
 
