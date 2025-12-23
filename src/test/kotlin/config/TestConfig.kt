@@ -14,11 +14,11 @@ class TestConfig(
 
     companion object {
         fun loadFromEnv(): TestConfig {
-            // Дефолтные значения (можно изменить под свой проект)
+            // Дефолтные значения
             val defaultBaseUrl = "http://localhost:8080"
             val defaultToken = "dummy-token-for-local-tests"
 
-            // Пытаемся взять из ENV, иначе используем дефолты
+            // Берём из ENV или используем дефолты
             val baseUrl = System.getenv("API_BASE_URL") ?: defaultBaseUrl
             val authToken = System.getenv("API_TOKEN") ?: defaultToken
 
@@ -26,7 +26,8 @@ class TestConfig(
             val timeoutSeconds = System.getenv("API_TIMEOUT_SECONDS")
                 ?.toLongOrNull()
                 ?.coerceAtLeast(1)  // Минимум 1 секунда
-                ?: 30L
+                ?.toInt()             // ← ключевое преобразование Long → Int
+                ?: 30              // ← теперь 30 (Int), а не 30L (Long)
 
             return TestConfig(baseUrl, authToken, timeoutSeconds)
         }
