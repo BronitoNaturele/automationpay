@@ -6,7 +6,7 @@ package config
 class TestConfig(
     val baseUrl: String,
     val authToken: String,
-    val timeoutSeconds: Long = 30
+    val timeoutSeconds: Int = 30
 ) {
     override fun toString(): String {
         return "TestConfig(baseUrl='$baseUrl', authToken='[REDACTED]')"
