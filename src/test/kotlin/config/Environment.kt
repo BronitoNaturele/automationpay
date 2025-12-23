@@ -28,6 +28,7 @@ object EnvironmentConfig {
             ?: throw IllegalArgumentException("Base URL не найден в environment: $env")
 
         val authToken = System.getenv("API_TOKEN")
+            ?: System.getProperty("API_TOKEN")  // добавляем поддержку -DAPI_TOKEN
             ?: throw IllegalArgumentException("API_TOKEN не задан")
 
         return TestConfig(baseUrl, authToken)
