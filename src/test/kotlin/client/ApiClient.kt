@@ -6,18 +6,25 @@
 package client
 
 import config.TestConfig
-import io.restassured.RestAssured
-import io.restassured.config.RestAssuredConfig
-import io.restassured.http.ContentType
-import io.restassured.response.Response
-import io.restassured.specification.RequestSpecification
-import io.restassured.config.HttpClientConfig
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import io.restassured.RestAssured //Точка входа для построения HTTP‑запросов. Содержит статические методы для настройки и отправки запросов.
+import io.restassured.config.RestAssuredConfig //Класс для глобальной конфигурации Rest‑Assured. Позволяет задать: тайм‑ауты, настройки HTTP‑клиента, логирование, сериализаторы и др.
+import io.restassured.http.ContentType //Используется для указания Content-Type и Accept в запросах.
+import io.restassured.response.Response //Класс, представляющий ответ от сервера. Содержит: статус‑код (statusCode), заголовки (headers), тело ответа (body), cookies и др.
+import io.restassured.specification.RequestSpecification //Интерфейс для настройки запроса до его отправки. Позволяет задать: базовые URI/пути, заголовки, параметры запроса, аутентификацию и др. Часто используется для повторного применения настроек
+import io.restassured.config.HttpClientConfig //Класс для настройки HTTP‑клиента под Rest‑Assured (Apache HttpClient или OkHttp). Позволяет конфигурировать: пул соединений, SSL/TLS, прокси, таймауты на уровне клиента.
+import com.fasterxml.jackson.databind.ObjectMapper //Главный класс библиотеки Jackson. Отвечает за: сериализацию (Java/Kotlin‑объект → JSON), десериализацию (JSON → Java/Kotlin‑объект).
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule //Расширение для Jackson, добавляющее поддержку Kotlin. Позволяет корректно работать с: data‑классами, nullability (?), свойствами с геттерами/сеттерами, перечислениями (enum).
 
 class ApiClient(private val config: TestConfig) {
+    //аннотация (для компилятора). Говорит: «Это API, которое можно использовать внутри модуля, но не снаружи».
     @PublishedApi
+    //internal — модификатор видимости: поле доступно только в этом модуле (проекте), но не из других библиотек/модулей.
+    //val objectMapper: ObjectMapper — объявляем неизменяемое поле типа ObjectMapper (это главный класс библиотеки Jackson для работы с JSON).
+    //= ObjectMapper() — инициализируем: создаём новый экземпляр ObjectMapper.
     internal val objectMapper: ObjectMapper = ObjectMapper()
+    //Это цепочка вызовов методов для настройки ObjectMapper:
+    //.registerKotlinModule() — подключает поддержку Kotlin: правильно обрабатывает data class; учитывает nullable‑типы (String?); работает с Kotlin‑перечислениями (enum class).
+    //.findAndRegisterModules() — ищет и подключает дополнительные модули Jackson (например, для работы с Java 8 датами, XML и т. п.). Это полезно, если в проекте используются сложные типы данных.
         .registerKotlinModule()
         .findAndRegisterModules()
 
