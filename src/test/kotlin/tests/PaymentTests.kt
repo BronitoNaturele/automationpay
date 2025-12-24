@@ -1,23 +1,18 @@
-//Классы тестовых сценариев (Test Cases)
-//UserApiTests, AuthApiTests и т. п.
-//Содержат тестовые методы для конкретных эндпоинтов.
-//Используют JUnit5 (@Test, @ParameterizedTest и др.).
-//Вызывают методы ApiClient и проверяют ответы.
+//Классы тестовых сценариев (Test Cases) UserApiTests, AuthApiTests и т. п. Вызывают методы ApiClient и проверяют ответы.
 
 package tests
 
 import logger.ApiLogger
-
 import client.ApiClient
 import config.EnvironmentConfig
-import dto.Request.PaymentRequest
+import utils.JsonUtils.JsonUtils
 import dto.Response.PaymentResponse
 import validator.ResponseValidator.PaymentValidator
 import validator.SchemaValidator.PaymentSchemaValidator
+
 import io.restassured.response.Response
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import utils.JsonUtils.JsonUtils
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.AfterEach
 
@@ -31,18 +26,14 @@ class PaymentTests {
     fun setUp() {
         val config = EnvironmentConfig.getConfigFromEnvVar()
         apiClient = ApiClient(config)
-        ApiLogger.enableFullLogging()  // Включаем логирование для всех тестов
     }
     @AfterEach
     fun tearDown() {
-
     }
 
     @Test
     fun `get payment methods returns valid response`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
-
-
 
         // Проверка статуса и заголовков
         assertEquals(200, response.statusCode(), "Expected 200 OK")
@@ -65,7 +56,7 @@ class PaymentTests {
         assertEquals("Сбер", paymentResponse.data[2].name)
         assertEquals("Картой СГ", paymentResponse.data[3].name)
     }
-    fun logger(){
-        println(ApiLogger)
+    private fun logger() {
+        println(ApiLogger.enableFullRequestLogging())
     }
 }
