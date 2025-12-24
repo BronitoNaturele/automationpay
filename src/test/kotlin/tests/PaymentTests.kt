@@ -35,7 +35,7 @@ class PaymentTests {
     }
     @AfterEach
     fun tearDown() {
-        ApiLogger.disableLogging()  // Очищаем фильтры после теста
+
     }
 
     @Test

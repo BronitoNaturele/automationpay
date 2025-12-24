@@ -11,8 +11,4 @@ object ApiLogger {
     fun enableFullLogging() {
         RestAssured.filters(RequestLoggingFilter(), ResponseLoggingFilter())
     }
-
-    fun disableLogging() {
-        RestAssured.clearFilters()
-    }
 }
