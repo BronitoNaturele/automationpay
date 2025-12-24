@@ -11,16 +11,19 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testImplementation("org.junit.jupiter:junit-jupiter-api")
+    // JUnit 5
+    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:2.2.21'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test:2.2.21'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.1'
-    testImplementation ('io.rest-assured:rest-assured:6.0.0')
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    // Kotlin
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.21")
+    // Jackson (обновление версии)
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.20.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.1")
+
+    // Rest-Assured
+    testImplementation("io.rest-assured:rest-assured:6.0.0")
 }
 
 test {
