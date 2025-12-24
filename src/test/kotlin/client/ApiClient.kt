@@ -12,15 +12,15 @@ import io.restassured.http.ContentType //Используется для ука�
 import io.restassured.response.Response //Класс, представляющий ответ от сервера. Содержит: статус‑код (statusCode), заголовки (headers), тело ответа (body), cookies и др.
 import io.restassured.specification.RequestSpecification //Интерфейс для настройки запроса до его отправки. Позволяет задать: базовые URI/пути, заголовки, параметры запроса, аутентификацию и др. Часто используется для повторного применения настроек
 import io.restassured.config.HttpClientConfig //Класс для настройки HTTP‑клиента под Rest‑Assured (Apache HttpClient или OkHttp). Позволяет конфигурировать: пул соединений, SSL/TLS, прокси, таймауты на уровне клиента.
-import logger.ApiLogger //наш логгер
+
 import utils.JsonUtils.JsonUtils
 import com.fasterxml.jackson.core.type.TypeReference
+
 
 
 class ApiClient(private val config: TestConfig) {
 
     private lateinit var request: RequestSpecification
-    private val apiLogger = ApiLogger()
 
     init {
         RestAssured.baseURI = config.baseUrl
@@ -37,7 +37,6 @@ class ApiClient(private val config: TestConfig) {
             .contentType(ContentType.JSON)
             .header("Authorization", "Bearer ${config.authToken}")
             .log().all()
-            .filter(apiLogger)
     }
 
     fun post(

@@ -1,15 +1,18 @@
 //Логирование запросов/ответов (URL, заголовки, тело, статус).
 //Настройка уровней логирования (DEBUG, INFO).
 //Интеграция с SLF4J + Logback.
-package config
+package logger
 
-import io.restassured.RestAssured.*
-import org.junit.jupiter.api.Test
+import io.restassured.filter.log.RequestLoggingFilter
+import io.restassured.filter.log.ResponseLoggingFilter
+import io.restassured.RestAssured
 
-class ApiLogger {
+object ApiLogger {
+    fun enableFullLogging() {
+        RestAssured.filters(RequestLoggingFilter(), ResponseLoggingFilter())
+    }
 
-    @Test
-    fun fullLogs() {
-        given().log().all()
+    fun disableLogging() {
+        RestAssured.clearFilters()
     }
 }
