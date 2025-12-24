@@ -4,7 +4,7 @@
 package logger
 
 import io.restassured.filter.Filter
-import io.restassured.filter.FilterChain  // Правильный импорт!
+import io.restassured.filter.FilterChain
 import io.restassured.specification.FilterableRequestSpecification
 import io.restassured.specification.FilterableResponseSpecification
 import io.restassured.response.Response
@@ -36,10 +36,10 @@ class ApiLogger : Filter {
     override fun filter(
         requestSpec: FilterableRequestSpecification,
         responseSpec: FilterableResponseSpecification,
-        ctx: FilterChain  // Используем FilterChain
+        ctx: FilterChain
     ): Response {
         logRequest(requestSpec)
-        val response = ctx.next(requestSpec, responseSpec)  // Вызов через FilterChain
+        val response = ctx.next(requestSpec, responseSpec)
         logResponse(response)
         return response
     }
@@ -50,7 +50,6 @@ class ApiLogger : Filter {
         val uri = requestSpec.getURI()
 
         println("[API-LOG] [$timestamp] $method $uri")
-
 
         if (logHeaders) {
             requestSpec.headers().asList().forEach { header ->
