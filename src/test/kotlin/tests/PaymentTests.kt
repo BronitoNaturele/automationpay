@@ -7,6 +7,7 @@ import client.ApiClient
 import config.EnvironmentConfig
 import utils.JsonUtils.JsonUtils
 import dto.Response.PaymentResponse
+import io.restassured.RestAssured
 import validator.ResponseValidator.PaymentValidator
 import validator.SchemaValidator.PaymentSchemaValidator
 
@@ -15,7 +16,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.AfterEach
-
+import io.restassured.filter.log.RequestLoggingFilter
+import io.restassured.filter.log.ResponseLoggingFilter
 
 class PaymentTests {
     private lateinit var apiClient: ApiClient
@@ -26,9 +28,11 @@ class PaymentTests {
     fun setUp() {
         val config = EnvironmentConfig.getConfigFromEnvVar()
         apiClient = ApiClient(config)
+        ApiLogger.enableLogging(logBody = true) // Включаем полное логирование
     }
     @AfterEach
     fun tearDown() {
+        ApiLogger.disableLogging()
     }
 
     @Test
@@ -55,8 +59,6 @@ class PaymentTests {
         assertEquals("Сохраненные способы", paymentResponse.data[1].name)
         assertEquals("Сбер", paymentResponse.data[2].name)
         assertEquals("Картой СГ", paymentResponse.data[3].name)
-    }
-    private fun logger() {
-        println(ApiLogger.enableFullRequestLogging())
+
     }
 }

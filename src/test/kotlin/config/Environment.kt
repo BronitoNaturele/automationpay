@@ -15,9 +15,8 @@ object EnvironmentConfig {
         Environment.UAT to "https://uat-pay.av.ru",
         Environment.PROD to "https://pay.av.ru"
     )
-        //функция getConfig с именем env и типом Environment, которая возвращает объект типа TestConfig(изфайла TestConfig).
+
     fun getConfig(env: Environment): TestConfig {
-        //System — класс из стандартной библиотеки Java/Kotlin, предоставляющий доступ к системным ресурсам;
         //getenv() — метод, который ищет переменную окружения по имени;
         //Код пытается получить baseUrl в три этапа, используя оператор ?: («элвис»):
         //Сначала ищет переменную окружения API_BASE_URL.
