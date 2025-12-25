@@ -1,6 +1,4 @@
-//Утилитные классы
-//utils.JsonUtils.JsonUtils, DateUtils и т. п.
-//Помогают сериализовать/десериализовать данные, генерировать тестовые значения и т. д.
+//Утилитные классы (utils.JsonUtils.JsonUtils, DateUtils и т.п.). Помогают сериализовать/десериализовать данные, генерировать тестовые значения и т.д.
 
 package utils.JsonUtils
 
@@ -14,11 +12,7 @@ object JsonUtils {
         .registerKotlinModule()
         .findAndRegisterModules()
 
-
-    /**
-     * Десериализует JSON‑строку в объект заданного типа.
-     * @throws IllegalArgumentException при ошибке десериализации
-     */
+    //Десериализует JSON‑строку в объект заданного типа.
     fun <T : Any> fromJson(json: String, clazz: Class<T>): T {
         try {
             return mapper.readValue(json, clazz)
@@ -27,10 +21,7 @@ object JsonUtils {
         }
     }
 
-    /**
-     * Сериализует объект в JSON‑строку.
-     * @throws IllegalArgumentException при ошибке сериализации
-     */
+    //Сериализует объект в JSON‑строку.
     fun toJson(obj: Any): String {
         try {
             return mapper.writeValueAsString(obj)
@@ -39,6 +30,7 @@ object JsonUtils {
         }
     }
 
+    //Десериализация JSON в объект заданного типа (с поддержкой дженериков)
     fun <T> fromJsonWithTypeReference(json: String, typeRef: TypeReference<T>): T {
         try {
             return mapper.readValue(json, typeRef)

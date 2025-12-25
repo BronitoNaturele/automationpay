@@ -5,10 +5,10 @@ package tests
 import logger.ApiLogger
 import client.ApiClient
 import config.EnvironmentConfig
+import dto.Response.PaymentMethod
 import utils.JsonUtils.JsonUtils
 import dto.Response.PaymentResponse
-import io.restassured.RestAssured
-import validator.ResponseValidator.PaymentValidator
+import validator.ResponseValidator.HttpStatusAssertions
 import validator.SchemaValidator.PaymentSchemaValidator
 
 import io.restassured.response.Response
@@ -16,13 +16,19 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.AfterEach
-import io.restassured.filter.log.RequestLoggingFilter
-import io.restassured.filter.log.ResponseLoggingFilter
+import org.junit.jupiter.api.Assertions.assertTrue
+
 
 class PaymentTests {
     private lateinit var apiClient: ApiClient
-    private val paymentValidator = PaymentValidator()
-    private val schemaValidator = PaymentSchemaValidator()
+    private val httpStatusAssertions = HttpStatusAssertions()
+    private val schemaValidator = PaymentSchemaValidator<PaymentResponse, PaymentMethod> (
+        PaymentResponse::class.java, // responseClass
+        { it.name },               // nameSelector
+        { it.uuid },               // uuidSelector
+        { it.typeId },             // typeIdSelector
+        { it.weight }              // weightSelector
+    )
 
     @BeforeEach
     fun setUp() {
@@ -38,15 +44,20 @@ class PaymentTests {
     @Test
     fun `get payment methods returns valid response`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
-
-        // Проверка статуса и заголовков
-        assertEquals(200, response.statusCode(), "Expected 200 OK")
-        paymentValidator.assertContentTypeJson(response)
-
-        // Валидация схемы и бизнес‑логики
-        schemaValidator.validate(response)
-        paymentValidator.assertSuccess(response)
-
+            response.then()
+            .log().all()
+        httpStatusAssertions.assertSuccess(response)
+        // Полная валидация схемы
+        schemaValidator.validate(
+            response,
+            { it.data },
+            { method ->
+                schemaValidator.validateName(method)
+                schemaValidator.validateUuid(method)
+                schemaValidator.validateTypeId(method)
+                schemaValidator.validateWeight(method)
+            }
+        )
 
         // Десериализация
         val paymentResponse: PaymentResponse = JsonUtils.fromJson(
