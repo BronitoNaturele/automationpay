@@ -2,8 +2,12 @@
 
 package validator.ResponseValidator
 
+import dto.Response.PaymentResponse
+
 import io.restassured.response.Response
 import org.junit.jupiter.api.Assertions.*
+import utils.JsonUtils.JsonUtils
+import kotlin.test.DefaultAsserter.fail
 
 
 open class HttpStatusAssertions {
@@ -42,5 +46,47 @@ open class HttpStatusAssertions {
         assertEquals(422, response.statusCode) {
             "Expected HTTP 422 UNPROCESSABLE_CONTENT, but got ${response.statusCode}"
         }
+    }
+}
+
+open class PaymentMethodsFieldsAsserts(private val response: Response){
+    private val paymentResponse: PaymentResponse by lazy {
+        JsonUtils.fromJson(response.asString(), PaymentResponse::class.java)
+    }
+
+    fun CheckSbpMethod() {
+        val found = paymentResponse.data.firstOrNull { it.name == "СБП" }
+
+        if (found == null) {
+            fail("Элемент с name='СБП' не найден. Доступные имена: ${paymentResponse.data.map { it.name }}")
+        }
+        assertEquals("СБП", found.name)
+    }
+
+    fun CheckSavedMethods(){
+        val found = paymentResponse.data.firstOrNull { it.name == "Сохраненные способы" }
+
+        if (found == null) {
+            fail("Элемент с name='Сохраненные способы' не найден. Доступные имена: ${paymentResponse.data.map { it.name }}")
+        }
+        assertEquals("Сохраненные способы", found.name)
+    }
+
+    fun CheckSberMethod(){
+        val found = paymentResponse.data.firstOrNull { it.name == "Сбер" }
+
+        if (found == null) {
+            fail("Элемент с name='Сбер' не найден. Доступные имена: ${paymentResponse.data.map { it.name }}")
+        }
+        assertEquals("Сбер", found.name)
+    }
+
+    fun CheckSberGateMethod(){
+        val found = paymentResponse.data.firstOrNull { it.name == "Картой СГ" }
+
+        if (found == null) {
+            fail("Элемент с name='Картой СГ' не найден. Доступные имена: ${paymentResponse.data.map { it.name }}")
+        }
+        assertEquals("Картой СГ", found.name)
     }
 }

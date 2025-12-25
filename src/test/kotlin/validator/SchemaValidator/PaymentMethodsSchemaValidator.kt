@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.*
 
 import java.util.regex.Pattern
 
-class PaymentSchemaValidator<T : Any, E> constructor(
+class PaymentMethodsSchemaValidator<T : Any, E> constructor(
     private val responseClass: Class<T>,
     private val nameSelector: (E) -> String?,
     private val uuidSelector: (E) -> String?,
