@@ -4,9 +4,6 @@
 
 package dto.Request
 
-import dto.Response.PaymentMethod
-
-
 data class BodyPaymentMethodsResponse(
     val data: List<PaymentMethod>  // массив элементов
 )

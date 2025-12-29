@@ -12,6 +12,7 @@ import logger.ApiLogger
 import client.ApiClient
 import config.EnvironmentConfig
 import dto.Request.BodyPaymentMethodsResponse
+import dto.Request.PaymentMethod
 import utils.JsonUtils.JsonUtils
 import dto.Response.PaymentResponse
 
@@ -37,20 +38,31 @@ class PaymentMethodsTests {
         assertEquals(200, response.statusCode) {
             "Ожидался код 200 OK, но получен ${response.statusCode}: ${response.asString()}"
         }
-        val bodyPaymentMethodsResponse = BodyPaymentMethodsResponse(
 
-        )
-        val paymentResponse: PaymentResponse = JsonUtils.fromJson(
+        //Десериализуем ответ в наш data class
+        val paymentResponse: BodyPaymentMethodsResponse = JsonUtils.fromJson(
             response.asString(),
-            PaymentResponse::class.java
+            BodyPaymentMethodsResponse::class.java
         )
+        //Проверки структуры ответа
         assertNotNull(paymentResponse) { "Десериализация не удалась: paymentResponse == null" }
+
+        //Проверяем наличие и непустоту массива data
         assertNotNull(paymentResponse.data) { "Поле 'data' отсутствует в ответе" }
-        assertNotNull(paymentResponse.name) { "Поле 'name' отсутствует в ответе" }
-        assertNotNull(paymentResponse.uuid) { "Поле 'uuid' отсутствует в ответе" }
-        assertNotNull(paymentResponse.type_id) { "Поле 'type_id' отсутствует в ответе" }
-        assertNotNull(paymentResponse.weight) { "Поле 'weight' отсутствует в ответе" }
+        assertTrue(paymentResponse.data.isNotEmpty()) { "Список 'data' пуст" }
 
 
+        //Проверяем каждый элемент в массиве data
+        paymentResponse.data.forEachIndexed { index, method ->
+            // Проверяем обязательные поля
+            assertNotNull(method.name) { "Элемент #$index: поле 'name' отсутствует" }
+            assertNotNull(method.uuid) { "Элемент #$index: поле 'uuid' отсутствует" }
+            assertNotNull(method.type_id) { "Элемент #$index: поле 'type_id' отсутствует" }
+            assertNotNull(method.weight) { "Элемент #$index: поле 'weight' отсутствует" }
+
+            // Дополнительные проверки значений (пример)
+            assertTrue(method.name.isNotEmpty()) { "Элемент #$index: поле 'name' не должно быть пустым" }
+            assertTrue(method.weight >= 0) { "Элемент #$index: поле 'weight' должно быть >= 0" }
+        }
     }
 }
