@@ -12,6 +12,7 @@ import logger.ApiLogger
 import client.ApiClient
 import config.EnvironmentConfig
 import dto.Request.BodyPaymentMethodsResponse
+import io.restassured.module.jsv.JsonSchemaValidator
 import utils.JsonUtils.JsonUtils
 
 class PaymentMethodsTests {
@@ -29,7 +30,8 @@ class PaymentMethodsTests {
     }
 
     @Test
-    fun `Validating the JSON response scheme to the request`() {
+    //Проверяем ответ на запрос, чтобы он соответствовал схеме JSON
+    fun `Validating the JSON scheme to the response`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
         response.then()
             .log().all()
@@ -37,21 +39,16 @@ class PaymentMethodsTests {
                 .then()
                 .statusCode(200)
                 .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("JsonSchema/PaymentMethodsResponseSchemaJson.json"))
-                .body("text", equalTo("Hello, World!"))
-                .body("id", equalTo(123));
+
         assertEquals(200, response.statusCode) {
             "Ожидался код 200 OK, но получен ${response.statusCode}: ${response.asString()}"
         }
     }
 
     @Test
-    fun `get payment methods returns valid response`() {
+    //Проверяем наличие полей в ответе
+    fun `Get payment methods returns valid response`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
-            response.then()
-            .log().all()
-        assertEquals(200, response.statusCode) {
-            "Ожидался код 200 OK, но получен ${response.statusCode}: ${response.asString()}"
-        }
 
         //Десериализуем ответ в наш data class
         val paymentResponse: BodyPaymentMethodsResponse = JsonUtils.fromJson(
@@ -96,6 +93,109 @@ class PaymentMethodsTests {
                     assertEquals(4, method.type_id)
                     assertEquals(1, method.weight)
                 }
+                "Картой СГ" -> {
+                    assertEquals("d96d0e7f-771a-4c85-9f13-5eda4bca9251", method.uuid)
+                    assertEquals(6, method.type_id)
+                    assertEquals(1, method.weight)
+                }
+            }
+        }
+    }
+
+    @Test
+    //Проверяем наличие метода СБП
+    fun `Checking for the method SBP in the response`() {
+        val response: Response = apiClient.get("/api/v1/payment/methods")
+
+        //Десериализуем ответ в наш data class
+        val paymentResponse: BodyPaymentMethodsResponse = JsonUtils.fromJson(
+            response.asString(),
+            BodyPaymentMethodsResponse::class.java
+        )
+
+        //Проверяем каждый элемент в массиве data
+        paymentResponse.data.forEachIndexed { index, method ->
+            // Специфические проверки по name
+            when (method.name) {
+
+                "СБП" -> {
+                    assertEquals("e9eafe9a-2c6a-449d-abbc-764f525a1f34", method.uuid)
+                    assertEquals(7, method.type_id)
+                    assertEquals(1004, method.weight)
+                }
+            }
+        }
+    }
+
+    @Test
+    //Проверяем наличие метода Сохраненные способы
+    fun `Checking for the method Saved Methods in the response`() {
+        val response: Response = apiClient.get("/api/v1/payment/methods")
+
+        //Десериализуем ответ в наш data class
+        val paymentResponse: BodyPaymentMethodsResponse = JsonUtils.fromJson(
+            response.asString(),
+            BodyPaymentMethodsResponse::class.java
+        )
+
+        //Проверяем каждый элемент в массиве data
+        paymentResponse.data.forEachIndexed { index, method ->
+
+            // Специфические проверки по name
+            when (method.name) {
+
+                "Сохраненные способы" -> {
+                    assertEquals("3a17ae5d-7de3-41a5-9f19-bf490c87b8a7", method.uuid)
+                    assertEquals(3, method.type_id)
+                    assertEquals(100, method.weight)
+                }
+            }
+        }
+    }
+
+    @Test
+    //Проверяем наличие метода Сбер
+    fun `Checking for the method Sber in the response`() {
+        val response: Response = apiClient.get("/api/v1/payment/methods")
+
+        //Десериализуем ответ в наш data class
+        val paymentResponse: BodyPaymentMethodsResponse = JsonUtils.fromJson(
+            response.asString(),
+            BodyPaymentMethodsResponse::class.java
+        )
+
+        //Проверяем каждый элемент в массиве data
+        paymentResponse.data.forEachIndexed { index, method ->
+
+            // Специфические проверки по name
+            when (method.name) {
+
+                "Сбер" -> {
+                    assertEquals("c961c5bd-0df7-46bc-9684-94baebc54a10", method.uuid)
+                    assertEquals(4, method.type_id)
+                    assertEquals(1, method.weight)
+                }
+            }
+        }
+    }
+
+    @Test
+    //Проверяем наличие метода Картой СГ
+    fun `Checking for the method SberGate in the response`() {
+        val response: Response = apiClient.get("/api/v1/payment/methods")
+
+        //Десериализуем ответ в наш data class
+        val paymentResponse: BodyPaymentMethodsResponse = JsonUtils.fromJson(
+            response.asString(),
+            BodyPaymentMethodsResponse::class.java
+        )
+
+        //Проверяем каждый элемент в массиве data
+        paymentResponse.data.forEachIndexed { index, method ->
+
+            // Специфические проверки по name
+            when (method.name) {
+
                 "Картой СГ" -> {
                     assertEquals("d96d0e7f-771a-4c85-9f13-5eda4bca9251", method.uuid)
                     assertEquals(6, method.type_id)

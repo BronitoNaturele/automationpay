@@ -14,8 +14,6 @@ import io.restassured.config.HttpClientConfig //Класс для настрой
 import utils.JsonUtils.JsonUtils
 import com.fasterxml.jackson.core.type.TypeReference
 
-
-
 class ApiClient(private val config: TestConfig) {
 
     private lateinit var request: RequestSpecification
