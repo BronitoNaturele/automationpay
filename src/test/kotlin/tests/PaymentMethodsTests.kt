@@ -12,9 +12,7 @@ import logger.ApiLogger
 import client.ApiClient
 import config.EnvironmentConfig
 import dto.Request.BodyPaymentMethodsResponse
-import dto.Request.PaymentMethod
 import utils.JsonUtils.JsonUtils
-import dto.Response.PaymentResponse
 
 class PaymentMethodsTests {
     private lateinit var apiClient: ApiClient
@@ -31,6 +29,22 @@ class PaymentMethodsTests {
     }
 
     @Test
+    fun `Validating the JSON response scheme to the request`() {
+        val response: Response = apiClient.get("/api/v1/payment/methods")
+        response.then()
+            .log().all()
+        response
+                .then()
+                .statusCode(200)
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("JsonSchema/PaymentMethodsResponseSchemaJson.json"))
+                .body("text", equalTo("Hello, World!"))
+                .body("id", equalTo(123));
+        assertEquals(200, response.statusCode) {
+            "Ожидался код 200 OK, но получен ${response.statusCode}: ${response.asString()}"
+        }
+    }
+
+    @Test
     fun `get payment methods returns valid response`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
             response.then()
@@ -44,6 +58,7 @@ class PaymentMethodsTests {
             response.asString(),
             BodyPaymentMethodsResponse::class.java
         )
+
         //Проверки структуры ответа
         assertNotNull(paymentResponse) { "Десериализация не удалась: paymentResponse == null" }
 

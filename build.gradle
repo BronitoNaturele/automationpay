@@ -23,6 +23,7 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.20.1")
     // Rest-Assured
     testImplementation("io.rest-assured:rest-assured:6.0.0")
+    testImplementation ("io.rest-assured:json-schema-validator:6.0.0")
 }
 
 test {
