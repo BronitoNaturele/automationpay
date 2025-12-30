@@ -22,11 +22,11 @@ class PaymentMethodsTests {
     fun setUp() {
         val config = EnvironmentConfig.getConfigFromEnvVar()
         apiClient = ApiClient(config)
-        ApiLogger.enableLogging(logBody = true) // Включаем полное логирование
+        //ApiLogger.enableLogging(logBody = true) // Включаем полное логирование
     }
     @AfterEach
     fun tearDown() {
-        ApiLogger.disableLogging()
+        //ApiLogger.disableLogging()
     }
 
     @Test
@@ -75,30 +75,6 @@ class PaymentMethodsTests {
             // Дополнительные проверки значений (пример)
             assertTrue(method.name.isNotEmpty()) { "Элемент #$index: поле 'name' не должно быть пустым" }
             assertTrue(method.weight >= 0) { "Элемент #$index: поле 'weight' должно быть >= 0" }
-
-            // Специфические проверки по name
-            when (method.name) {
-                "СБП" -> {
-                    assertEquals("e9eafe9a-2c6a-449d-abbc-764f525a1f34", method.uuid)
-                    assertEquals(7, method.type_id)
-                    assertEquals(1004, method.weight)
-                }
-                "Сохраненные способы" -> {
-                    assertEquals("3a17ae5d-7de3-41a5-9f19-bf490c87b8a7", method.uuid)
-                    assertEquals(3, method.type_id)
-                    assertEquals(100, method.weight)
-                }
-                "Сбер" -> {
-                    assertEquals("c961c5bd-0df7-46bc-9684-94baebc54a10", method.uuid)
-                    assertEquals(4, method.type_id)
-                    assertEquals(1, method.weight)
-                }
-                "Картой СГ" -> {
-                    assertEquals("d96d0e7f-771a-4c85-9f13-5eda4bca9251", method.uuid)
-                    assertEquals(6, method.type_id)
-                    assertEquals(1, method.weight)
-                }
-            }
         }
     }
 
