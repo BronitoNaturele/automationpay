@@ -1,4 +1,4 @@
-//Классы тестовых сценариев (Test Cases) UserApiTests, AuthApiTests и т. п. Вызывают методы ApiClient и проверяют ответы.
+//Классы тестовых сценариев. Вызывают методы ApiClient и проверяют ответы.
 
 package tests
 
@@ -8,14 +8,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.AfterEach
 
-import logger.ApiLogger
 import client.ApiClient
 import config.EnvironmentConfig
 import dto.Request.BodyPaymentMethodsResponse
 import io.restassured.module.jsv.JsonSchemaValidator
 import utils.JsonUtils.JsonUtils
 
-class PaymentMethodsTests {
+class GET_api_v1_payment_methods {
     private lateinit var apiClient: ApiClient
 
     @BeforeEach
@@ -38,7 +37,7 @@ class PaymentMethodsTests {
         response
                 .then()
                 .statusCode(200)
-                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("JsonSchema/PaymentMethodsResponseSchemaJson.json"))
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("JsonSchema/GET_api_v1_payment_methods.json"))
 
         assertEquals(200, response.statusCode) {
             "Ожидался код 200 OK, но получен ${response.statusCode}: ${response.asString()}"

@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Схема ответа платёжного API",
+  "properties": {
+    "success": {
+      "type": "boolean",
+      "description": "Флаг успешности операции"
+    },
+    "id": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Уникальный идентификатор платежа"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL для перехода к оплате"
+    },
+    "additional_fields": {
+      "type": "array",
+      "items": {},
+      "description": "Дополнительные поля (в данном случае — пустой массив)"
+    }
+  },
+  "required": ["success", "id", "url", "additional_fields"],
+  "additionalProperties": false,
+  "examples": [
+    {
+      "success": true,
+      "id": 1217127,
+      "url": "https://test-pay.av.ru/pay/1a3b0a4e-0ba8-4463-a92a-3bc954a22f8b",
+      "additional_fields": []
+    }
+  ]
+}

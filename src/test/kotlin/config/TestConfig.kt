@@ -1,6 +1,4 @@
-//Конфигурационные классы.
-//Хранит базовые URL, токены, тайм‑ауты.
-//authToken (он же API_TOKEN в файле Environment.kt) задаётся при запуске тестов, в консоли. Как и API_BASE_URL.
+//Конфигурационные классы. Хранит базовые URL, токены, тайм‑ауты. authToken (он же API_TOKEN в файле Environment.kt) задаётся при запуске тестов, в консоли. Как и API_BASE_URL.
 package config
 
 class TestConfig(
