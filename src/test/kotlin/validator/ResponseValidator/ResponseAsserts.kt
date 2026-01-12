@@ -2,7 +2,7 @@
 
 package validator.ResponseValidator
 
-import dto.Response.PaymentResponse
+import dto.Response.BodyPaymentMethodsResponse
 
 import io.restassured.response.Response
 import org.junit.jupiter.api.Assertions.*
@@ -50,8 +50,8 @@ open class HttpStatusAssertions {
 }
 
 open class PaymentMethodsFieldsAsserts(private val response: Response){
-    private val paymentResponse: PaymentResponse by lazy {
-        JsonUtils.fromJson(response.asString(), PaymentResponse::class.java)
+    private val paymentResponse: BodyPaymentMethodsResponse by lazy {
+        JsonUtils.fromJson(response.asString(), BodyPaymentMethodsResponse::class.java)
     }
 
     fun CheckSbpMethod() {

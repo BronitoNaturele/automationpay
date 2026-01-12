@@ -1,24 +1,15 @@
-//Модели данных (DTO)
-//RequestDTO
-//Описывают структуру ответов
+//Модели данных (DTO). RequestDTO. Описывают структуру ответов
 
 package dto.Response
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
-//Корневой DTO для ответа API.
-//@param data Список доступных платёжных методов.
-data class PaymentResponse(
-    @JsonProperty("data")
-    val data: List<PaymentMethod>
+data class BodyPaymentMethodsResponse(
+    val data: List<PaymentMethod>  // 1. массив элементов
 )
 
-
-//DTO для отдельного платёжного метода.
- data class PaymentMethod(
+// 2. Элемент массива (каждый объект внутри data)
+data class PaymentMethod(
     val name: String,
     val uuid: String,
-    @JsonProperty("type_id")
-    val typeId: Int,
+    val type_id: Int,
     val weight: Int
 )

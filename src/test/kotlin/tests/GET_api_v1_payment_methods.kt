@@ -10,7 +10,7 @@ import org.junit.jupiter.api.AfterEach
 
 import client.ApiClient
 import config.EnvironmentConfig
-import dto.Request.BodyPaymentMethodsResponse
+import dto.Response.BodyPaymentMethodsResponse
 import io.restassured.module.jsv.JsonSchemaValidator
 import utils.JsonUtils.JsonUtils
 
