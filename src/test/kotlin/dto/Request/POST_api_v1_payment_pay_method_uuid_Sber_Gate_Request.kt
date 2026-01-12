@@ -8,7 +8,7 @@ data class SberGateBodyRequest(
     val mobile: Boolean,
     val platform: String,
     val account_id: String,
-    val secure_pay: String? = null,
+    //val secure_pay: String? = null,
     val name: String,
     val payload: List<PayloadItem>,
     val phone: String,
@@ -46,7 +46,7 @@ object SberGateRequestGenerator {
             mobile = false,
             platform = "WEB",
             account_id = "1-2Q4PVM7Z",
-            secure_pay = null,
+            //secure_pay = null,
             name = "randomName",
             payload = listOf(PayloadItem("testKey", "testValue")),
             phone = "79138166920",
@@ -75,5 +75,10 @@ object SberGateRequestGenerator {
             account_id = account_id,
             name = name
         )
+    }
+
+    // Формирует URL с query-параметром method_uuid
+    fun buildUrlWithMethodUuid(basePath: String, methodUuid: String): String {
+        return "$basePath?method_uuid=$methodUuid"
     }
 }

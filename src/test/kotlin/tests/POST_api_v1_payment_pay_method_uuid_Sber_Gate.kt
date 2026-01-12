@@ -12,6 +12,7 @@ import client.ApiClient
 import config.EnvironmentConfig
 import dto.Request.SberGateRequestGenerator
 import io.restassured.module.jsv.JsonSchemaValidator
+import logger.ApiLogger
 import utils.JsonUtils.JsonUtils
 
 
@@ -22,46 +23,44 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     fun setUp() {
         val config = EnvironmentConfig.getConfigFromEnvVar()
         apiClient = ApiClient(config)
-        //ApiLogger.enableLogging(logBody = true) // Включаем полное логирование
+        ApiLogger.enableLogging(logBody = true)
     }
+
     @AfterEach
     fun tearDown() {
-        //ApiLogger.disableLogging()
+        // ApiLogger.disableLogging()
     }
 
     @Test
-    //Проверяем ответ на запрос, чтобы он соответствовал схеме JSON
-    fun `Validating the JSON scheme to the response`() {
-        // 1. Подготовка запроса
-        val request = SberGateRequestGenerator.baseRequest()
+    fun `Validating the JSON scheme to the response with method_uuid`() {
+        // 1. Подготовка тела запроса
+        val requestBody = SberGateRequestGenerator.baseRequest()
 
-        // 2. Выполнение запроса и получение ответа
-        val response: Response = apiClient
-            .body(request)
-            .post("/api/v1/payment/pay/method_uuid")
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
 
-        // 3. Валидация ответа (единая цепочка проверок)
+        // 3. Выполнение POST-запроса
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = requestBody,
+            headers = emptyMap() // если нужны дополнительные заголовки — передайте их
+        )
+        println(response)
+
+        // 4. Валидация ответа (единая цепочка)
         response.then()
-            .log().all()                          // Логируем всё о запросе/ответе
-            .statusCode(202)                     // Проверяем статус-код
+            .log().all() // Логируем запрос/ответ
+            .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
                     "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
 
-        // 4. Дополнительная проверка (опционально, т.к. статус уже проверен выше)
-        // Можно убрать, если доверяете Rest-Assured
+        // 5. Дополнительная проверка статуса (опционально)
         assertEquals(
             202,
             response.statusCode,
             "Ожидался код 202, но получен ${response.statusCode}: ${response.asString()}"
         )
     }
-
-    @Test
-    fun `new`() {
-
-    }
-
 }

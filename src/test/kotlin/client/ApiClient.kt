@@ -32,6 +32,7 @@ class ApiClient(private val config: TestConfig) {
         request = RestAssured.given()
             .contentType(ContentType.JSON)
             .header("Authorization", "Bearer ${config.authToken}")
+            .header("Accept", "application/json")
     }
 
     fun post(
