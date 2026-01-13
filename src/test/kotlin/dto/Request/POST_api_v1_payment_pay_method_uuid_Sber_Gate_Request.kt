@@ -1,7 +1,9 @@
 package dto.Request
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import kotlin.random.Random
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 data class SberGateBodyRequest(
     val amount: Any? = null,
     val invoice_id: Any? = null,
@@ -9,7 +11,7 @@ data class SberGateBodyRequest(
     val platform: Any? = null,
     val account_id: Any? = null,
     //val secure_pay: String? = null,
-    val name: String,
+    val name: Any? = null,
     val payload: List<Any?>,
     val phone: Any? = null,
     val email: Any? = null,
@@ -43,6 +45,85 @@ object SberGateRequestGenerator {
         return SberGateBodyRequest(
             amount = "2",
             invoice_id = generateRandom10Digit().toString(),
+            mobile = false,
+            platform = "WEB",
+            account_id = "1-2Q4PVM7Z",
+            //secure_pay = null,
+            name = "randomName",
+            payload = listOf(PayloadItem("testKey", "testValue")),
+            phone = "79138166920",
+            email = "klepa_e@mail.ru",
+            description = "TestDeadCow",
+            fields = Fields(
+                successUrl = "https://uat-pay.av.ru/success/123456",
+                errorUrl = "https://uat-pay.av.ru//error/123456",
+                ttl = 3600
+            )
+        )
+    }
+
+    fun noAmountRequest(): SberGateBodyRequest {
+        return SberGateBodyRequest(
+            invoice_id = generateRandom10Digit().toString(),
+            mobile = false,
+            platform = "WEB",
+            account_id = "1-2Q4PVM7Z",
+            name = "randomName",
+            payload = listOf(PayloadItem("testKey", "testValue")),
+            phone = "79138166920",
+            email = "klepa_e@mail.ru",
+            description = "TestDeadCow",
+            fields = Fields(
+                successUrl = "https://uat-pay.av.ru/success/123456",
+                errorUrl = "https://uat-pay.av.ru//error/123456",
+                ttl = 3600
+            )
+        )
+    }
+
+    fun noMobileRequest(): SberGateBodyRequest {
+        return SberGateBodyRequest(
+            amount = "2",
+            invoice_id = generateRandom10Digit().toString(),
+            platform = "WEB",
+            account_id = "1-2Q4PVM7Z",
+            //secure_pay = null,
+            name = "randomName",
+            payload = listOf(PayloadItem("testKey", "testValue")),
+            phone = "79138166920",
+            email = "klepa_e@mail.ru",
+            description = "TestDeadCow",
+            fields = Fields(
+                successUrl = "https://uat-pay.av.ru/success/123456",
+                errorUrl = "https://uat-pay.av.ru//error/123456",
+                ttl = 3600
+            )
+        )
+    }
+
+    fun noPlatformRequest(): SberGateBodyRequest {
+        return SberGateBodyRequest(
+            amount = "2",
+            invoice_id = generateRandom10Digit().toString(),
+            mobile = false,
+            account_id = "1-2Q4PVM7Z",
+            //secure_pay = null,
+            name = "randomName",
+            payload = listOf(PayloadItem("testKey", "testValue")),
+            phone = "79138166920",
+            email = "klepa_e@mail.ru",
+            description = "TestDeadCow",
+            fields = Fields(
+                successUrl = "https://uat-pay.av.ru/success/123456",
+                errorUrl = "https://uat-pay.av.ru//error/123456",
+                ttl = 3600
+            )
+        )
+    }
+
+    fun noInvoiceIdRequest(): SberGateBodyRequest {
+        return SberGateBodyRequest(
+            amount = "2",
             mobile = false,
             platform = "WEB",
             account_id = "1-2Q4PVM7Z",
