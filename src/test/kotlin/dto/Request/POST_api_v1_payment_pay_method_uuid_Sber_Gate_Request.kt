@@ -4,7 +4,7 @@ import kotlin.random.Random
 
 data class SberGateBodyRequest(
     val amount: String,
-    val invoice_id: Long,
+    val invoice_id: String,
     val mobile: Boolean,
     val platform: String,
     val account_id: String,
@@ -42,7 +42,7 @@ object SberGateRequestGenerator {
     fun baseRequest(): SberGateBodyRequest {
         return SberGateBodyRequest(
             amount = "2",
-            invoice_id = generateRandom10Digit(),
+            invoice_id = generateRandom10Digit().toString(),
             mobile = false,
             platform = "WEB",
             account_id = "1-2Q4PVM7Z",
@@ -63,6 +63,7 @@ object SberGateRequestGenerator {
     // Создаёт запрос с изменёнными полями
     fun requestWith(
         amount: String = "2",
+        invoice_id: String = generateRandom10Digit().toString(),
         mobile: Boolean = false,
         platform: String = "WEB",
         account_id: String = "1-2Q4PVM7Z",
@@ -70,6 +71,7 @@ object SberGateRequestGenerator {
     ): SberGateBodyRequest {
         return baseRequest().copy(
             amount = amount,
+            invoice_id = invoice_id,
             mobile = mobile,
             platform = platform,
             account_id = account_id,
