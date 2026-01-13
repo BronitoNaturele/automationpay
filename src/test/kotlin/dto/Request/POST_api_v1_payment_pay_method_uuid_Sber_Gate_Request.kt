@@ -3,29 +3,29 @@ package dto.Request
 import kotlin.random.Random
 
 data class SberGateBodyRequest(
-    val amount: String,
-    val invoice_id: String,
-    val mobile: Boolean,
-    val platform: String,
-    val account_id: String,
+    val amount: Any? = null,
+    val invoice_id: Any? = null,
+    val mobile: Any? = null,
+    val platform: Any? = null,
+    val account_id: Any? = null,
     //val secure_pay: String? = null,
     val name: String,
-    val payload: List<PayloadItem>,
-    val phone: String,
-    val email: String,
-    val description: String,
-    val fields: Fields
+    val payload: List<Any?>,
+    val phone: Any? = null,
+    val email: Any? = null,
+    val description: Any? = null,
+    val fields: Any? = null
 )
 
 data class PayloadItem(
-    val key: String,
-    val value: String
+    val key: Any? = null,
+    val value: Any? = null
 )
 
 data class Fields(
-    val successUrl: String,
-    val errorUrl: String,
-    val ttl: Int
+    val successUrl: Any? = null,
+    val errorUrl: Any? = null,
+    val ttl: Any? = null
 )
 
 // Вспомогательный объект для генерации тестовых данных
@@ -57,25 +57,6 @@ object SberGateRequestGenerator {
                 errorUrl = "https://uat-pay.av.ru//error/123456",
                 ttl = 3600
             )
-        )
-    }
-
-    // Создаёт запрос с изменёнными полями
-    fun requestWith(
-        amount: String = "2",
-        invoice_id: String = generateRandom10Digit().toString(),
-        mobile: Boolean = false,
-        platform: String = "WEB",
-        account_id: String = "1-2Q4PVM7Z",
-        name: String = "randomName"
-    ): SberGateBodyRequest {
-        return baseRequest().copy(
-            amount = amount,
-            invoice_id = invoice_id,
-            mobile = mobile,
-            platform = platform,
-            account_id = account_id,
-            name = name
         )
     }
 
