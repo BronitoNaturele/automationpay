@@ -7,14 +7,10 @@ import io.restassured.filter.log.RequestLoggingFilter
 import io.restassured.filter.log.ResponseLoggingFilter
 import io.restassured.RestAssured
 
-
 object ApiLogger {
 
-    /**
-     * Включает глобальное логирование всех HTTP‑запросов и ответов
-     * @param logBody true — логировать тело запроса/ответа, false — только заголовки
-     * @param logHeaders true — включать заголовки в лог
-     */
+    //Включает глобальное логирование всех HTTP‑запросов и ответов. @param logBody true — логировать тело запроса/ответа, false — только заголовки. @param logHeaders true — включать заголовки в лог
+
     fun enableLogging(
         logBody: Boolean = true,
         logHeaders: Boolean = true
@@ -32,18 +28,14 @@ object ApiLogger {
         RestAssured.filters(requestFilter, responseFilter)
     }
 
-    /**
-     * Отключает все глобальные фильтры логирования
-     */
+    //Отключает все глобальные фильтры логирования
+
     fun disableLogging() {
         RestAssured.filters()
     }
 
-    /**
-     * Возвращает фильтр для логирования запроса (для использования в конкретных тестах)
-     * @param logDetail уровень детализации логирования
-     * @param logBody включать ли тело в лог
-     */
+    //Возвращает фильтр для логирования запроса (для использования в конкретных тестах). @param logDetail уровень детализации логирования. @param logBody включать ли тело в лог
+
     fun requestFilter(
         logDetail: LogDetail = LogDetail.ALL,
         logBody: Boolean = true
@@ -51,11 +43,8 @@ object ApiLogger {
         return RequestLoggingFilter(logDetail, logBody, System.out)
     }
 
-    /**
-     * Возвращает фильтр для логирования ответа (для использования в конкретных тестах)
-     * @param logDetail уровень детализации логирования
-     * @param logBody включать ли тело в лог
-     */
+    //Возвращает фильтр для логирования ответа (для использования в конкретных тестах). @param logDetail уровень детализации логирования. @param logBody включать ли тело в лог
+
     fun responseFilter(
         logDetail: LogDetail = LogDetail.ALL,
         logBody: Boolean = true

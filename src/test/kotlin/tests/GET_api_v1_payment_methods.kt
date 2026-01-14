@@ -32,8 +32,7 @@ class GET_api_v1_payment_methods {
     //Проверяем ответ на запрос, чтобы он соответствовал схеме JSON
     fun `Validating the JSON scheme to the response`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
-        response.then()
-            .log().all()
+
         response
                 .then()
                 .statusCode(200)
