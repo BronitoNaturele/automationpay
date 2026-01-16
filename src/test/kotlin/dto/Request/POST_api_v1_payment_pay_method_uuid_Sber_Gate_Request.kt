@@ -31,7 +31,7 @@ data class Fields(
     val ttl: Any? = null
 )
 
-// Вспомогательный объект для генерации тестовых данных
+//Тело запроса без возможности null
 object SberGateRequestGenerator {
 
     private val random = Random
@@ -142,6 +142,25 @@ object SberGateRequestGenerator {
         )
     }
 
+    fun noAccountIdRequest(): SberGateBodyRequest {
+        return SberGateBodyRequest(
+            amount = "2",
+            invoice_id = generateRandom10Digit().toString(),
+            mobile = false,
+            platform = "WEB",
+            name = "randomName",
+            payload = listOf(PayloadItem("testKey", "testValue")),
+            phone = "79000000000",
+            email = "klepa_e@mail.ru",
+            description = "TestDeadCow",
+            fields = Fields(
+                successUrl = "https://uat-pay.av.ru/success/123456",
+                errorUrl = "https://uat-pay.av.ru//error/123456",
+                ttl = 3600
+            )
+        )
+    }
+
     // Формирует URL с query-параметром method_uuid
     fun buildUrlWithMethodUuid(basePath: String, methodUuid: String): String {
         return "$basePath?method_uuid=$methodUuid"
@@ -175,7 +194,7 @@ data class NullFields(
     val ttl: Any? = null
 )
 
-// Вспомогательный объект для генерации тестовых данных
+//Тело запроса с возможностью null
 object SberGateNullFieldsRequestGenerator {
 
     private val random = Random
