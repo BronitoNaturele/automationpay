@@ -30,7 +30,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем ответ на запрос, чтобы он соответствовал схеме JSON
-    fun `Validating the JSON scheme to the response`() {
+    fun `Код ответа 200 | Ответ соответствует схеме JSON`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         response
@@ -45,7 +45,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие полей в ответе
-    fun `Get payment methods returns valid response`() {
+    fun `Проверка наличия обязательных полей в ответе`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -78,7 +78,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода СБП
-    fun `Checking for the method SBP in the response`() {
+    fun `Проверка наличия в ответе метода оплаты СБП`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -103,7 +103,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода Сохраненные способы
-    fun `Checking for the method Saved Methods in the response`() {
+    fun `Проверка наличия в ответе метода оплаты Сохранённые способы`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -129,7 +129,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода Сбер
-    fun `Checking for the method Sber in the response`() {
+    fun `Проверка наличия в ответе метода оплаты Сбер`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -155,7 +155,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода Картой СГ
-    fun `Checking for the method SberGate in the response`() {
+    fun `Проверка наличия в ответе метода оплаты Картой СГ`() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
