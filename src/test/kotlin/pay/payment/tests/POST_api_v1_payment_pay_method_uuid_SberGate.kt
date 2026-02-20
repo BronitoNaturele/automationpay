@@ -1,27 +1,25 @@
 //Классы тестовых сценариев. Вызывают методы ApiClient и проверяют ответы.
 
-package tests
+package pay.payment.tests
 
 import io.restassured.response.Response
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.AfterEach
 
-import client.ApiClient
-import config.EnvironmentConfig
-import dto.Request.Fields
-import dto.Request.NullFields
-import dto.Request.NullPayloadItem
-import dto.Request.PayloadItem
-import dto.Request.SberGateBodyRequest
-import dto.Request.SberGateNullFieldsRequestGenerator
-import dto.Request.SberGateRequestGenerator
-import dto.Request.SberGateRequestGenerator.generateRandom10Digit
+import pay.xprojectdata.client.ApiClient
+import pay.xprojectdata.config.EnvironmentConfig
+import pay.xprojectdata.dto.request.Fields
+import pay.xprojectdata.dto.request.NullFields
+import pay.xprojectdata.dto.request.NullPayloadItem
+import pay.xprojectdata.dto.request.PayloadItem
+import pay.xprojectdata.dto.request.SberGateNullFieldsRequestGenerator
+import pay.xprojectdata.dto.request.SberGateRequestGenerator
 import io.restassured.module.jsv.JsonSchemaValidator
-import logger.ApiLogger
 import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.DisplayName
 
-class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
+class POST_api_v1_payment_pay_method_uuid_SberGate {
 
     private lateinit var apiClient: ApiClient
     val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
@@ -39,7 +37,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `202 - Validating the JSON scheme to the response with method_uuid`() {
+    @DisplayName("202.Проверка валидации JSON схемы ответа")
+    fun validatingTheJsonSchemeToTheResponseWithMethodUuid() {
         //Подготовка тела запроса
         val requestBody = SberGateRequestGenerator.baseRequest()
         //Выполнение POST-запроса
@@ -54,13 +53,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = IOS, mobile = true`(){
+    @DisplayName("202 - platform = IOS, mobile = true")
+    fun platformIosMobileTrue(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "IOS",
             mobile = true
@@ -74,13 +74,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = IOS, mobile = false`(){
+    @DisplayName("202 - platform = IOS, mobile = false")
+    fun platformIosMobileFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "IOS",
             mobile = false
@@ -94,13 +95,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = ANDROID, mobile = true`(){
+    @DisplayName("202 - platform = ANDROID, mobile = true")
+    fun platformAndroidMobileTrue(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "ANDROID",
             mobile = true
@@ -114,13 +116,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = ANDROID, mobile = false`(){
+    @DisplayName("202 - platform = ANDROID, mobile = false")
+    fun platformAndroidMobileFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "ANDROID",
             mobile = false
@@ -134,13 +137,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = WINDOWS_PHONE, mobile = true`(){
+    @DisplayName("202 - platform = WINDOWS_PHONE, mobile = true")
+    fun platformWindowsPhoneMobileTrue(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "WINDOWS_PHONE",
             mobile = true
@@ -154,13 +158,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = WINDOWS_PHONE, mobile = false`(){
+    @DisplayName("202 - platform = WINDOWS_PHONE, mobile = false")
+    fun platformWindowsPhoneMobileFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "WINDOWS_PHONE",
             mobile = false
@@ -174,13 +179,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = WEB, mobile = true`(){
+    @DisplayName("202 - platform = WEB, mobile = true")
+    fun platformWebMobileTrue(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "WEB",
             mobile = true
@@ -194,13 +200,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - platform = WEB, mobile = false`(){
+    @DisplayName("202 - platform = WEB, mobile = false")
+    fun platformWebMobileFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             platform = "WEB",
             mobile = false
@@ -214,13 +221,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `202 - no account_id`(){
+    @DisplayName("202 - no account_id")
+    fun noAccountId(){
         val modifiedRequest = SberGateRequestGenerator.noAccountIdRequest().copy(
         )
 
@@ -233,13 +241,14 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
     }
 
     @Test
-    fun `405 - method not allowed`(){
+    @DisplayName("405 - method not allowed")
+    fun methodNotAllowed(){
         val noAmountRequestBody = SberGateRequestGenerator.noAmountRequest().copy()
         val response: Response = apiClient.post(
             path = "/api/v1/payment/pay/",
@@ -257,7 +266,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `406 - no method_uuid`(){
+    @DisplayName("406 - no method_uuid")
+    fun noMethodUuid(){
         val noAmountRequestBody = SberGateRequestGenerator.noAmountRequest().copy()
         val response: Response = apiClient.post(
             path = "/api/v1/payment/pay/:method_uuid",
@@ -274,7 +284,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - no amount`(){
+    @DisplayName("400 - no amount")
+    fun noAmount(){
         val noAmountRequestBody = SberGateRequestGenerator.noAmountRequest().copy()
         val response: Response = apiClient.post(
             path = basePath,
@@ -292,7 +303,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - no mobile`(){
+    @DisplayName("400 - no mobile")
+    fun noMobile(){
         val noMobileRequestBody = SberGateRequestGenerator.noMobileRequest().copy()
         val response: Response = apiClient.post(
             path = basePath,
@@ -310,7 +322,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - no platform`(){
+    @DisplayName("400 - no platform")
+    fun noPlatform(){
         val noPlatformRequestBody = SberGateRequestGenerator.noPlatformRequest().copy()
         val response: Response = apiClient.post(
             path = basePath,
@@ -328,7 +341,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - no invoice_id`(){
+    @DisplayName("400 - no invoice_id")
+    fun noInvoiceId(){
         val noInvoiceIDRequestBody = SberGateRequestGenerator.noInvoiceIdRequest().copy()
         val response: Response = apiClient.post(
             path = basePath,
@@ -346,7 +360,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - amount = "1a!"`(){
+    @DisplayName("400 - amount = `1a!`")
+    fun amountString(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = "1a!")
         val response: Response = apiClient.post(
             path = basePath,
@@ -364,7 +379,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - amount = {}`(){
+    @DisplayName("400 - amount = `{}`")
+    fun amountObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -382,7 +398,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - amount = empty array`(){
+    @DisplayName("400 - amount = empty array")
+    fun amountEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -400,7 +417,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - amount = false`(){
+    @DisplayName("400 - amount = false")
+    fun amountFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -419,7 +437,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - amount = null`(){
+    @DisplayName("400 - amount = null")
+    fun amountNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(amount = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -437,7 +456,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - invoice_id = 1`(){
+    @DisplayName("400 - invoice_id = 1")
+    fun invoiceIdInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -455,7 +475,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - invoice_id = {}`(){
+    @DisplayName("400 - invoice_id = {}")
+    fun invoiceIdObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -473,7 +494,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - invoice_id = empty array`(){
+    @DisplayName("400 - invoice_id = empty array")
+    fun invoiceIdEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -491,7 +513,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - invoice_id = false`(){
+    @DisplayName("400 - invoice_id = false")
+    fun invoiceIdFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -509,7 +532,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - invoice_id = null`(){
+    @DisplayName("400 - invoice_id = null")
+    fun invoiceIdNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(invoice_id = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -527,7 +551,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - mobile = 2`(){
+    @DisplayName("400 - mobile = 2")
+    fun mobileInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = 2)
         val response: Response = apiClient.post(
             path = basePath,
@@ -545,7 +570,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - mobile = "1a!"`(){
+    @DisplayName("400 - mobile = `1a!`")
+    fun mobileString(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = "1a!")
         val response: Response = apiClient.post(
             path = basePath,
@@ -563,7 +589,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - mobile = {}`(){
+    @DisplayName("400 - mobile = {}")
+    fun mobileObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -581,7 +608,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - mobile = empty array`(){
+    @DisplayName("400 - mobile = empty array")
+    fun mobileEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -599,7 +627,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - mobile = null`(){
+    @DisplayName("400 - mobile = null")
+    fun mobileNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(mobile = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -617,7 +646,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - platform = 1`(){
+    @DisplayName("400 - platform = 1")
+    fun platformInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -636,7 +666,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - platform = {}`(){
+    @DisplayName("400 - platform = {}")
+    fun platformObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -654,7 +685,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - platform = empty array`(){
+    @DisplayName("400 - platform = empty array")
+    fun platformEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -672,7 +704,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - platform = false`(){
+    @DisplayName("400 - platform = false")
+    fun platformFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -691,7 +724,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - platform = null`(){
+    @DisplayName("400 - platform = null")
+    fun platformNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(platform = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -709,7 +743,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - account_id = 1`(){
+    @DisplayName("400 - account_id = 1")
+    fun accountIdInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -728,7 +763,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - account_id = {}`(){
+    @DisplayName("400 - account_id = {}")
+    fun accountIdObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -747,7 +783,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - account_id = empty array`(){
+    @DisplayName("400 - account_id = empty array")
+    fun accountIdEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -766,7 +803,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - account_id = false`(){
+    @DisplayName("400 - account_id = false")
+    fun accountIdFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -785,7 +823,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - account_id = null`(){
+    @DisplayName("400 - account_id = null")
+    fun accountIdNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(account_id = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -804,7 +843,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - name = 1`(){
+    @DisplayName("400 - name = 1")
+    fun nameInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -822,7 +862,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - name = {}`(){
+    @DisplayName("400 - name = {}")
+    fun nameObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -840,7 +881,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - name = empty array`(){
+    @DisplayName("400 - name = empty array")
+    fun nameEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -858,7 +900,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - name = false`(){
+    @DisplayName("400 - name = false")
+    fun nameFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -876,7 +919,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - name = null`(){
+    @DisplayName("400 - name = null")
+    fun nameNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(name = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -894,7 +938,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload = 1`(){
+    @DisplayName("400 - payload = 1")
+    fun payloadInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(payload = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -912,7 +957,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload = "1a!"`(){
+    @DisplayName("400 - payload = `1a!`")
+    fun payloadString(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(payload = "1a!")
         val response: Response = apiClient.post(
             path = basePath,
@@ -930,7 +976,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload = false`(){
+    @DisplayName("400 - payload = false")
+    fun payloadFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(payload = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -948,7 +995,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload = null`(){
+    @DisplayName("400 - payload = null")
+    fun payloadNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(payload = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -966,7 +1014,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to key = 1`(){
+    @DisplayName("400 - payload to key = 1")
+    fun payloadToKeyInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                 key = 1,
@@ -989,7 +1038,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to key = {}`(){
+    @DisplayName("400 - payload to key = {}")
+    fun payloadToKeyObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                     key = {},
@@ -1012,7 +1062,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to key = empty array`(){
+    @DisplayName("400 - payload to key = empty array")
+    fun payloadToKeyEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                     key = emptyList<Any?>(),
@@ -1035,7 +1086,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to key = false`(){
+    @DisplayName("400 - payload to key = false")
+    fun payloadToKeyFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                     key = false,
@@ -1058,7 +1110,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to key = null`(){
+    @DisplayName("400 - payload to key = null")
+    fun payloadToKeyNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             payload = NullPayloadItem(
                     key = null,
@@ -1081,7 +1134,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to value = 1`(){
+    @DisplayName("400 - payload to value = 1")
+    fun payloadToValueInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                     key = "testKey",
@@ -1104,7 +1158,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to value = {}`(){
+    @DisplayName("400 - payload to value = {}")
+    fun payloadToValueObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                     key = "testKey",
@@ -1127,7 +1182,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to value = empty array`(){
+    @DisplayName("400 - payload to value = empty array")
+    fun payloadToValueEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                     key = "testKey",
@@ -1150,7 +1206,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to value = false`(){
+    @DisplayName("400 - payload to value = false")
+    fun payloadToValueFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             payload = PayloadItem(
                     key = "testKey",
@@ -1173,7 +1230,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - payload to value = null`(){
+    @DisplayName("400 - payload to value = null")
+    fun payloadToValueNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             payload = NullPayloadItem(
                     key = "testKey",
@@ -1196,7 +1254,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - phone = 1`(){
+    @DisplayName("400 - phone = 1")
+    fun phoneInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1215,7 +1274,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - phone = {}`(){
+    @DisplayName("400 - phone = {}")
+    fun phoneObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -1234,7 +1294,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - phone = empty array`(){
+    @DisplayName("400 - phone = empty array")
+    fun phoneEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -1253,7 +1314,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - to phone = false`(){
+    @DisplayName("400 - phone = false")
+    fun phoneFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1272,7 +1334,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email = 1`(){
+    @DisplayName("400 - email = 1")
+    fun emailInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1290,7 +1353,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email = {}`(){
+    @DisplayName("400 - email = {}")
+    fun emailObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -1308,7 +1372,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email = empty array`(){
+    @DisplayName("400 - email = empty array")
+    fun emailEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -1326,7 +1391,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email = false`(){
+    @DisplayName("400 - email = false")
+    fun emailFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1344,7 +1410,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email = null`(){
+    @DisplayName("400 - email = null")
+    fun emailNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(email = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1362,7 +1429,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - description = 1`(){
+    @DisplayName("400 - description = 1")
+    fun descriptionInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1380,7 +1448,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - description = {}`(){
+    @DisplayName("400 - description = {}")
+    fun descriptionObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = {})
         val response: Response = apiClient.post(
             path = basePath,
@@ -1398,7 +1467,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - description = empty array`(){
+    @DisplayName("400 - description = empty array")
+    fun descriptionEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = emptyList<Any?>())
         val response: Response = apiClient.post(
             path = basePath,
@@ -1416,7 +1486,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - description = false`(){
+    @DisplayName("400 - description = false")
+    fun descriptionFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1434,7 +1505,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - description = null`(){
+    @DisplayName("400 - description = null")
+    fun descriptionNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(description = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1452,7 +1524,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields = 1`(){
+    @DisplayName("400 - fields = 1")
+    fun fieldsInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(fields = 1)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1470,7 +1543,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields = "1a!"`(){
+    @DisplayName("400 - fields = `1a!`")
+    fun fieldsString(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(fields = "1a!")
         val response: Response = apiClient.post(
             path = basePath,
@@ -1488,7 +1562,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields = false`(){
+    @DisplayName("400 - fields = false")
+    fun fieldsFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(fields = false)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1506,7 +1581,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields = null`(){
+    @DisplayName("400 - fields = null")
+    fun fieldsNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(fields = null)
         val response: Response = apiClient.post(
             path = basePath,
@@ -1524,7 +1600,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to successUrl = 1`(){
+    @DisplayName("400 - fields to successUrl = 1")
+    fun fieldsToSuccessUrlInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = 1,
@@ -1548,7 +1625,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to successUrl = {}`(){
+    @DisplayName("400 - fields to successUrl = {}")
+    fun fieldsToSuccessUrlObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = {},
@@ -1572,7 +1650,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to successUrl = empty array`(){
+    @DisplayName("400 - fields to successUrl = empty array")
+    fun fieldsToSuccessUrlEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = emptyList<Any?>(),
@@ -1596,7 +1675,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to successUrl = false`(){
+    @DisplayName("400 - fields to successUrl = false")
+    fun fieldsToSuccessUrlFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = false,
@@ -1620,7 +1700,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to successUrl = null`(){
+    @DisplayName("400 - fields to successUrl = null")
+    fun fieldsToSuccessUrlNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             fields = NullFields(
                 successUrl = null,
@@ -1644,7 +1725,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to errorUrl = 1`(){
+    @DisplayName("400 - fields to errorUrl = 1")
+    fun fieldsToErrorUrlInteger(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1668,7 +1750,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to errorUrl = {}`(){
+    @DisplayName("400 - fields to errorUrl = {}")
+    fun fieldsToErrorUrlObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1692,7 +1775,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to errorUrl = empty array`(){
+    @DisplayName("400 - fields to errorUrl = empty array")
+    fun fieldsToErrorUrlEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1716,7 +1800,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to errorUrl = false`(){
+    @DisplayName("400 - fields to errorUrl = false")
+    fun fieldsToErrorUrlFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1740,7 +1825,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to errorUrl = null`(){
+    @DisplayName("400 - fields to errorUrl = null")
+    fun fieldsToErrorUrlNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1764,7 +1850,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to ttl = 1_1`(){
+    @DisplayName("400 - fields to ttl = 1.1")
+    fun fieldsToTtlFloat(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1789,7 +1876,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to ttl = "1a!"`(){
+    @DisplayName("400 - fields to ttl = `1a!`")
+    fun fieldsToTtlString(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1813,7 +1901,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to ttl = {}`(){
+    @DisplayName("400 - fields to ttl = {}")
+    fun fieldsToTtlObject(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1838,7 +1927,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to ttl = empty array`(){
+    @DisplayName("400 - fields to ttl = empty array")
+    fun fieldsToTtlEmptyArray(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1863,7 +1953,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to ttl = false`(){
+    @DisplayName("400 - fields to ttl = false")
+    fun fieldsToTtlFalse(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             fields = Fields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1888,7 +1979,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - fields to ttl = null`(){
+    @DisplayName("400 - fields to ttl = null")
+    fun fieldsToTtlNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
@@ -1913,7 +2005,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - invoice_id = 21 simbol`(){
+    @DisplayName("400 - invoice_id = 21 symbol")
+    fun invoiceIdManySymbols(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             invoice_id = "123456789012345678901"
         )
@@ -1933,7 +2026,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email without @`(){
+    @DisplayName("400 - email without @")
+    fun emailWithoutDog(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             email = "klepa_email.ru"
         )
@@ -1953,7 +2047,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email have a whitespace`(){
+    @DisplayName("400 - email have a whitespace")
+    fun emailHaveAWhitespace(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             email = "klepa_e@ mail.ru"
         )
@@ -1973,7 +2068,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - email with double points`(){
+    @DisplayName("400 - email with double points")
+    fun emailWithDoublePoints(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             email = "klepa_e@mail..ru"
         )
@@ -1993,7 +2089,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - phone have a whitespace`(){
+    @DisplayName("400 - phone have a whitespace")
+    fun phoneHaveAWhitespace(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "7900 0000000"
         )
@@ -2013,7 +2110,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - phone start at 9`(){
+    @DisplayName("400 - phone start at 9")
+    fun phoneStartAtNine(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "99000000000"
         )
@@ -2033,7 +2131,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - phone start at 6`(){
+    @DisplayName("400 - phone start at 6")
+    fun phoneStartAtSix(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "69000000000"
         )
@@ -2053,7 +2152,8 @@ class POST_api_v1_payment_pay_method_uuid_Sber_Gate {
     }
 
     @Test
-    fun `400 - phone start at 7 + 11 numbers`(){
+    @DisplayName("400 - phone start at 7 + 11 numbers")
+    fun phoneStartAtSevenPlusElevenNumbers(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "790000000000"
         )

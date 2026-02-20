@@ -1,4 +1,4 @@
-package dto.Request
+package pay.xprojectdata.dto.request
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import kotlin.random.Random

@@ -1,6 +1,6 @@
 //Модели данных (DTO). RequestDTO. Описывают структуру ответов
 
-package dto.Response
+package pay.xprojectdata.dto.response
 
 data class BodyPaymentMethodsResponse(
     val data: List<PaymentMethod>  // 1. массив элементов

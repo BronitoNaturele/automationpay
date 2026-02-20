@@ -1,9 +1,9 @@
 //Классы для отправки HTTP‑запросов и получения ответов ApiClient (основной клиент для взаимодействия с API). Содержит методы для GET, POST, PUT, DELETE и др.
 //Настраивает базовый URL, заголовки, авторизацию.
 
-package client
+package pay.xprojectdata.client
 
-import config.TestConfig
+import pay.xprojectdata.config.TestConfig
 import io.restassured.RestAssured //Точка входа для построения HTTP‑запросов. Содержит статические методы для настройки и отправки запросов.
 import io.restassured.config.RestAssuredConfig //Класс для глобальной конфигурации Rest‑Assured. Позволяет задать: тайм‑ауты, настройки HTTP‑клиента, логирование, сериализаторы и др.
 import io.restassured.http.ContentType //Используется для указания Content-Type и Accept в запросах.
@@ -11,7 +11,7 @@ import io.restassured.response.Response //Класс, представляющи
 import io.restassured.specification.RequestSpecification //Интерфейс для настройки запроса до его отправки. Позволяет задать: базовые URI/пути, заголовки, параметры запроса, аутентификацию и др. Часто используется для повторного применения настроек
 import io.restassured.config.HttpClientConfig //Класс для настройки HTTP‑клиента под Rest‑Assured (Apache HttpClient или OkHttp). Позволяет конфигурировать: пул соединений, SSL/TLS, прокси, таймауты на уровне клиента.
 
-import utils.JsonUtils.JsonUtils
+import pay.xprojectdata.utils.jsonutils.JsonUtils
 import com.fasterxml.jackson.core.type.TypeReference
 
 class ApiClient(private val config: TestConfig) {

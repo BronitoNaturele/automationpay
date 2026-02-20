@@ -1,6 +1,6 @@
-package dto.Response
+package pay.xprojectdata.dto.response
 
-data class SberGateResponseBody(
+data class sberGateResponseBody(
     val success: Boolean,
     val id: Long,
     val url: String,

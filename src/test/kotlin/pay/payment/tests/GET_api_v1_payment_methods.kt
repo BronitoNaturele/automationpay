@@ -1,6 +1,6 @@
 //Классы тестовых сценариев. Вызывают методы ApiClient и проверяют ответы.
 
-package tests
+package pay.payment.tests
 
 import io.restassured.response.Response
 import org.junit.jupiter.api.BeforeEach
@@ -8,11 +8,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.AfterEach
 
-import client.ApiClient
-import config.EnvironmentConfig
-import dto.Response.BodyPaymentMethodsResponse
+import pay.xprojectdata.client.ApiClient
+import pay.xprojectdata.config.EnvironmentConfig
+import pay.xprojectdata.dto.response.BodyPaymentMethodsResponse
 import io.restassured.module.jsv.JsonSchemaValidator
-import utils.JsonUtils.JsonUtils
+import pay.xprojectdata.utils.jsonutils.JsonUtils
 
 class GET_api_v1_payment_methods {
     private lateinit var apiClient: ApiClient
@@ -30,13 +30,13 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем ответ на запрос, чтобы он соответствовал схеме JSON
-    fun `Код ответа 200 | Ответ соответствует схеме JSON`() {
+    fun chekTheResponseCodeAndJsonScheme() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         response
                 .then()
                 .statusCode(200)
-                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("JsonSchema/GET_api_v1_payment_methods.json"))
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("pay.payment.jsonschema/GET_api_v1_payment_methods.json"))
 
         assertEquals(200, response.statusCode) {
             "Ожидался код 200 OK, но получен ${response.statusCode}: ${response.asString()}"
@@ -45,7 +45,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие полей в ответе
-    fun `Проверка наличия обязательных полей в ответе`() {
+    fun checkingForRequiredFieldsInTheResponse() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -78,7 +78,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода СБП
-    fun `Проверка наличия в ответе метода оплаты СБП`() {
+    fun checkingTheAvailabilityOfTheSbpPaymentMethodInTheResponse() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -103,7 +103,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода Сохраненные способы
-    fun `Проверка наличия в ответе метода оплаты Сохранённые способы`() {
+    fun checkingTheAvailabilityOfTheSavedMethodInTheResponse() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -129,7 +129,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода Сбер
-    fun `Проверка наличия в ответе метода оплаты Сбер`() {
+    fun checkingTheAvailabilityOfTheSberPaymentMethodInTheResponse() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class
@@ -155,7 +155,7 @@ class GET_api_v1_payment_methods {
 
     @Test
     //Проверяем наличие метода Картой СГ
-    fun `Проверка наличия в ответе метода оплаты Картой СГ`() {
+    fun checkingTheAvailabilityOfTheSberGatePaymentMethodInTheResponse() {
         val response: Response = apiClient.get("/api/v1/payment/methods")
 
         //Десериализуем ответ в наш data class

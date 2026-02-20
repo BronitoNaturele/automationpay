@@ -1,12 +1,12 @@
 //Набор asserts для ответов на запросы
 
-package validator.ResponseValidator
+package pay.xprojectdata.responsevalidator
 
-import dto.Response.BodyPaymentMethodsResponse
+import pay.xprojectdata.dto.response.BodyPaymentMethodsResponse
 
 import io.restassured.response.Response
 import org.junit.jupiter.api.Assertions.*
-import utils.JsonUtils.JsonUtils
+import pay.xprojectdata.utils.jsonutils.JsonUtils
 import kotlin.test.DefaultAsserter.fail
 
 

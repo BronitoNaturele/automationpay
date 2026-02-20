@@ -1,6 +1,6 @@
 //Утилитные классы (utils.JsonUtils.JsonUtils, DateUtils и т.п.). Помогают сериализовать/десериализовать данные, генерировать тестовые значения и т.д.
 
-package utils.JsonUtils
+package pay.xprojectdata.utils.jsonutils
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.ObjectMapper

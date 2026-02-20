@@ -1,9 +1,9 @@
-package tests
+package pay.payment.tests
 
-import client.ApiClient
+import pay.xprojectdata.client.ApiClient
 import com.codeborne.selenide.Condition
-import config.EnvironmentConfig
-import dto.Request.SberGateRequestGenerator
+import pay.xprojectdata.config.EnvironmentConfig
+import pay.xprojectdata.dto.request.SberGateRequestGenerator
 
 import com.codeborne.selenide.Selenide.open
 import com.codeborne.selenide.Selenide.*
@@ -14,6 +14,7 @@ import io.restassured.response.Response
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import kotlin.test.assertNotNull
 
@@ -36,7 +37,8 @@ class PUT_api_v1_payment_confirm_SberGate {
     }
 
     @Test
-    fun `202 - Успешное проведение платежа Картой СГ`() {
+    @DisplayName("202 - Успешное проведение платежа Картой СГ")
+    fun successfulSberGateCardPayment() {
         //Подготовка тела запроса
         val requestBody = SberGateRequestGenerator.baseRequest()
         //Выполнение POST-запроса
@@ -51,7 +53,7 @@ class PUT_api_v1_payment_confirm_SberGate {
             .statusCode(202)
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "JsonSchema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
                 )
             )
             .extract() //Извлекаем ответ после валидации

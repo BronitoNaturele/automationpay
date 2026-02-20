@@ -1,5 +1,5 @@
 //Конфигурационные классы. Хранит базовые URL, токены, тайм‑ауты. authToken (он же API_TOKEN в файле Environment.kt) задаётся при запуске тестов, в консоли. Как и API_BASE_URL.
-package config
+package pay.xprojectdata.config
 
 class TestConfig(
     val baseUrl: String,
@@ -14,7 +14,7 @@ class TestConfig(
         fun loadFromEnv(): TestConfig {
             // Дефолтные значения
             val defaultBaseUrl = "http://localhost:8080"
-            val defaultToken = "dummy-token-for-local-tests"
+            val defaultToken = "dummy-token-for-local-PaymentGatewayPayAvRu.Payment.tests"
 
             // Берём из ENV или используем дефолты
             val baseUrl = System.getenv("API_BASE_URL") ?: defaultBaseUrl

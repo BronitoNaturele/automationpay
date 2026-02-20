@@ -1,6 +1,6 @@
 //Логирование запросов/ответов (URL, заголовки, тело, статус).
 
-package logger
+package pay.xprojectdata.logger
 
 import io.restassured.filter.log.LogDetail
 import io.restassured.filter.log.RequestLoggingFilter
