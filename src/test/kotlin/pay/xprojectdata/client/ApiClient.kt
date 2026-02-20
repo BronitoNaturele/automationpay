@@ -102,14 +102,4 @@ class ApiClient(private val config: TestConfig) {
         }
         return spec.delete(path)
     }
-
-    /**
-     * Десериализует тело ответа в указанный тип с использованием TypeReference.
-     */
-    inline fun <reified T> deserializeResponse(response: Response): T {
-        return JsonUtils.fromJsonWithTypeReference(
-            response.asString(),
-            object : TypeReference<T>() {}
-        )
-    }
 }

@@ -53,7 +53,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -74,7 +74,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -95,7 +95,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -116,7 +116,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -137,7 +137,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -158,7 +158,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -179,7 +179,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -200,7 +200,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -221,7 +221,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }
@@ -241,7 +241,7 @@ class POST_api_v1_payment_pay_method_uuid_SberGate {
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
     }

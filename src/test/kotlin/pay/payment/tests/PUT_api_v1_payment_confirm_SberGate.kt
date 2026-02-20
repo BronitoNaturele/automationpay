@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import pay.xprojectdata.dto.request.sberGateBodyRequestForConfirmPutRequestGenerator
 import kotlin.test.assertNotNull
 
 class PUT_api_v1_payment_confirm_SberGate {
@@ -53,7 +54,7 @@ class PUT_api_v1_payment_confirm_SberGate {
             .statusCode(202)
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_Sber_Gate.json"
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
             .extract() //Извлекаем ответ после валидации
@@ -93,6 +94,35 @@ class PUT_api_v1_payment_confirm_SberGate {
         val elementButtonSubmit: SelenideElement = `$`(".footer_buttons button")
         elementButtonSubmit.should(Condition.exist)
         elementButtonSubmit.click()
+
+
+        //Подготовка тела PUT запроса на подтверждение платежа
+        val basePathForPut = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            id = extractedId.toIntOrNull(),
+        )
+
+        //Выполнение PUT-запроса
+        val responsePut: Response = apiClient.put(
+            path = basePathForPut,
+            body = modifiedRequestBodyPut,
+            headers = emptyMap() // если нужны дополнительные заголовки — передайте их
+        )
+
+        //Валидация ответа и извлечение url
+        val jsonPathPut = responsePut.then()
+            .statusCode(200)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/PUT_api_v1_payment_confirm.json"
+                )
+            )
+            .extract() //Извлекаем ответ после валидации
+            .jsonPath()
+
+        val success = jsonPathPut.getBoolean("success")
+        assertNotNull(success, "Поле success = Null")
+        assertTrue(success, "Ожидалось true, но получено: $success")
 
         //Тут надо будет дописать(когда будет готово) запрос на проверку статуса транзакции
     }

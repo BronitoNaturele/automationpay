@@ -10,7 +10,6 @@ import io.restassured.RestAssured
 object ApiLogger {
 
     //Включает глобальное логирование всех HTTP‑запросов и ответов. @param logBody true — логировать тело запроса/ответа, false — только заголовки. @param logHeaders true — включать заголовки в лог
-
     fun enableLogging(
         logBody: Boolean = true,
         logHeaders: Boolean = true
@@ -29,7 +28,6 @@ object ApiLogger {
     }
 
     //Отключает все глобальные фильтры логирования
-
     fun disableLogging() {
         RestAssured.filters()
     }
@@ -52,3 +50,12 @@ object ApiLogger {
         return ResponseLoggingFilter(logDetail, logBody, System.out)
     }
 }
+//До отправки
+//println("=== PUT Request ===")
+//println("URL: $basePathForPut")
+//println("Request Body: $modifiedRequestPut")
+//
+//После
+//println("=== PUT Response ===")
+//println("Status Code: ${responsePut.statusCode}")
+//println("Response Body: ${responsePut.body.asString()}")
