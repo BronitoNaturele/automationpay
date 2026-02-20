@@ -12,11 +12,10 @@ import io.restassured.specification.RequestSpecification //Интерфейс д
 import io.restassured.config.HttpClientConfig //Класс для настройки HTTP‑клиента под Rest‑Assured (Apache HttpClient или OkHttp). Позволяет конфигурировать: пул соединений, SSL/TLS, прокси, таймауты на уровне клиента.
 
 import pay.xprojectdata.utils.jsonutils.JsonUtils
-import com.fasterxml.jackson.core.type.TypeReference
 
 class ApiClient(private val config: TestConfig) {
 
-    private lateinit var request: RequestSpecification
+    private var request: RequestSpecification
 
     init {
         RestAssured.baseURI = config.baseUrl

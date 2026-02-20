@@ -160,11 +160,6 @@ object SberGateRequestGenerator {
             )
         )
     }
-
-    // Формирует URL с query-параметром method_uuid
-    fun buildUrlWithMethodUuid(basePath: String, methodUuid: String): String {
-        return "$basePath?method_uuid=$methodUuid"
-    }
 }
 
 //Класс-конструктор тела запроса с возможностью отправить null в полях
