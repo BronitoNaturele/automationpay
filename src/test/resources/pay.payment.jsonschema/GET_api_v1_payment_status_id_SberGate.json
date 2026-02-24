@@ -1,0 +1,60 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Ответ с информацией о транзакции и деталях платежа",
+  "properties": {
+    "id": {
+      "type": "integer",
+      "description": "Уникальный идентификатор записи",
+      "example": 1219656
+    },
+    "transaction_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID транзакции",
+      "example": "d3af4524-26d4-54b2-1b7c-51228eb43608"
+    },
+    "status": {
+      "type": "integer",
+      "description": "Код статуса операции",
+      "enum": [1, 2, 3, 4, 5],
+      "example": 3
+    },
+    "statusText": {
+      "type": "string",
+      "description": "Текстовое представление статуса операции",
+      "example": "Холдирование"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Дата и время последнего обновления статуса в формате ISO 8601",
+      "example": "2026-02-24T07:13:20.000000Z"
+    },
+    "payment_details": {
+      "type": "object",
+      "description": "Детали платёжной операции",
+      "properties": {
+        "system_id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Идентификатор платёжной системы",
+          "example": "d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+        },
+        "entity_type": {
+          "type": "string",
+          "description": "Тип платёжного инструмента",
+          "enum": ["CARD_MIR", "CARD_VISA", "CARD_MASTERCARD", "E_WALLET", "ACCOUNT"],
+          "example": "CARD_MIR"
+        },
+        "entity_info": {
+          "type": "string",
+          "description": "Информация о платёжном инструменте (частично замаскированный номер карты)",
+          "example": "2202 20** **** 2424"
+        }
+      },
+      "required": ["system_id", "entity_type", "entity_info"]
+    }
+  },
+  "required": ["id", "transaction_id", "status", "statusText", "updated", "payment_details"]
+}

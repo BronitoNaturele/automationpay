@@ -1,28 +1,35 @@
 package pay.payment.tests
 
-import pay.xprojectdata.client.ApiClient
 import com.codeborne.selenide.Condition
-import pay.xprojectdata.config.EnvironmentConfig
-import pay.xprojectdata.dto.request.SberGateRequestGenerator
-
-import com.codeborne.selenide.Selenide.open
 import com.codeborne.selenide.Selenide.*
 import com.codeborne.selenide.SelenideElement
 import io.restassured.module.jsv.JsonSchemaValidator
+import io.restassured.path.json.JsonPath
 import io.restassured.response.Response
 
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
+
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import pay.xprojectdata.client.ApiClient
+import pay.xprojectdata.config.EnvironmentConfig
+import pay.xprojectdata.dto.request.SberGateRequestGenerator
 import pay.xprojectdata.dto.request.sberGateBodyRequestForConfirmPutRequestGenerator
 import kotlin.test.assertNotNull
+import java.time.Duration
+import java.lang.Thread.sleep
+import org.junit.jupiter.api.Assertions.assertEquals
 
 class PUT_api_v1_payment_confirm_SberGate {
     private lateinit var apiClient: ApiClient
-        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
 
+    // Валидация Json
+    private fun getJsonPath(response: Response): JsonPath {
+        val json = response.asString()
+        return JsonPath.from(json)
+    }
 
     @BeforeEach
     fun setUp() {
@@ -40,6 +47,7 @@ class PUT_api_v1_payment_confirm_SberGate {
     @Test
     @DisplayName("202 - Успешное проведение платежа Картой СГ")
     fun successfulSberGateCardPayment() {
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
         //Подготовка тела запроса
         val requestBody = SberGateRequestGenerator.baseRequest()
         //Выполнение POST-запроса
@@ -50,7 +58,7 @@ class PUT_api_v1_payment_confirm_SberGate {
         )
 
         //Валидация ответа и извлечение url
-        val jsonPath = response.then()
+        response.then()
             .statusCode(202)
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
@@ -60,8 +68,9 @@ class PUT_api_v1_payment_confirm_SberGate {
             .extract() //Извлекаем ответ после валидации
             .jsonPath() //Получаем JsonPath
 
-        val extractedUrl = jsonPath.getString("url")
-        val extractedId = jsonPath.getString("id")
+        val jsonPathPost = getJsonPath(response)
+        val extractedUrl = jsonPathPost.getString("url")
+        val extractedId = jsonPathPost.getString("id")
 
         println("Извлечённый URL: $extractedUrl")
         println("Извлечённый ID: $extractedId")
@@ -95,6 +104,38 @@ class PUT_api_v1_payment_confirm_SberGate {
         elementButtonSubmit.should(Condition.exist)
         elementButtonSubmit.click()
 
+        // Задержка по секундам
+        val durationMillis = Duration.ofSeconds(20).toMillis()
+        try {
+            sleep(durationMillis)
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+        //Проверяем статус транзакции
+        val basePathForCheckTransactionStatus = "/api/v1/payment/status/" + extractedId.toIntOrNull()
+        val responseGetCheckTransaction: Response = apiClient.get(
+            path = basePathForCheckTransactionStatus,
+            headers = emptyMap()
+        )
+
+        // Валидация ответа
+        responseGetCheckTransaction.then()
+            .statusCode(200)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/GET_api_v1_payment_status_id_SberGate.json"
+                )
+            )
+
+        // Извлечение данных
+        val jsonPathStatus = getJsonPath(responseGetCheckTransaction)
+        val status = jsonPathStatus.getInt("status")
+        val statusText = jsonPathStatus.getString("statusText")
+
+        // Проверка значений полей
+        assertEquals(3, status)
+        assertEquals("Холдирование", statusText)
 
         //Подготовка тела PUT запроса на подтверждение платежа
         val basePathForPut = "/api/v1/payment/confirm"
@@ -109,18 +150,19 @@ class PUT_api_v1_payment_confirm_SberGate {
             headers = emptyMap() // если нужны дополнительные заголовки — передайте их
         )
 
-        //Валидация ответа и извлечение url
-        val jsonPathPut = responsePut.then()
+        // Валидация ответа
+        responsePut.then()
             .statusCode(200)
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
                     "pay.payment.jsonschema/PUT_api_v1_payment_confirm.json"
                 )
             )
-            .extract() //Извлекаем ответ после валидации
-            .jsonPath()
 
+        // Извлечение данных
+        val jsonPathPut = getJsonPath(responsePut)
         val success = jsonPathPut.getBoolean("success")
+
         assertNotNull(success, "Поле success = Null")
         assertTrue(success, "Ожидалось true, но получено: $success")
 
