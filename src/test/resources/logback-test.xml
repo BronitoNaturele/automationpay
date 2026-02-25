@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Консоль с цветным выводом (если поддерживается) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} %highlight(%-5level) %cyan(%logger{20}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Ротирующий файловый аппендер -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>build/logs/test.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- Имя архивных файлов -->
+            <fileNamePattern>build/logs/archive/test.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- Максимальный размер одного файла -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- Максимальное количество архивных файлов (7 дней) -->
+            <maxHistory>7</maxHistory>
+            <!-- Общий лимит на все архивы -->
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Логирование Selenide -->
+    <logger name="com.codeborne.selenide" level="INFO"/>
+    <!-- Более детальное логирование только для конкретных компонентов -->
+    <logger name="com.codeborne.selenide.webdriver.WebDriverFactory" level="DEBUG"/>
+    <logger name="org.openqa.selenium" level="WARN"/>
+
+    <!-- Логирование RestAssured -->
+    <logger name="io.restassured" level="DEBUG"/>
+    <logger name="org.apache.http" level="WARN"/>
+
+    <!-- Уменьшаем шум от внутренних компонентов -->
+    <logger name="org.apache.http.wire" level="OFF"/>
+    <logger name="org.apache.http.headers" level="OFF"/>
+
+    <!-- Логирование вашего кода -->
+    <logger name="pay.payment.tests" level="INFO"/>
+    <logger name="configLogger" level="INFO"/>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>

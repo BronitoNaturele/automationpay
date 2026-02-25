@@ -1,5 +1,3 @@
-//Классы тестовых сценариев. Вызывают методы ApiClient и проверяют ответы.
-
 package pay.payment.tests
 
 import io.restassured.response.Response
@@ -17,12 +15,21 @@ import pay.xprojectdata.dto.request.SberGateNullFieldsRequestGenerator
 import pay.xprojectdata.dto.request.SberGateRequestGenerator
 import io.restassured.module.jsv.JsonSchemaValidator
 import org.hamcrest.Matchers.*
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 
 class POST_api_v1_payment_pay_method_uuid_SberGate {
 
     private lateinit var apiClient: ApiClient
     val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+
+    companion object {
+        @BeforeAll
+        @JvmStatic
+        fun globalSetup() {
+            configLogger.globalSetup()
+        }
+    }
 
     @BeforeEach
     fun setUp() {

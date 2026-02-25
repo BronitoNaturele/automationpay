@@ -32,6 +32,11 @@ dependencies {
     testImplementation("io.qameta.allure:allure-rest-assured:2.32.0")
     testImplementation 'io.qameta.allure:allure-junit5:2.32.0'
 
+    testImplementation("ch.qos.logback:logback-classic:1.5.32")
+    testImplementation("io.github.oshai:kotlin-logging-jvm:8.0.01")
+    testImplementation("org.slf4j:slf4j-simple:2.0.9")
+
+
 }
 
 kotlin {
@@ -43,6 +48,11 @@ tasks.test {
     systemProperties["allure.results.directory"] = "$rootDir/allure-results"
     systemProperties["allure.report.directory"] = "$rootDir/allure-report"
     systemProperty("API_TOKEN", project.property("API_TOKEN") as String)
+    testLogging {
+        events("passed", "skipped", "failed", "standardOut", "standardError")
+        showStandardStreams = true
+        exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+    }
 }
 
 // Настройки очистки отчёта Allure

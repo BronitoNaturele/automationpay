@@ -1,5 +1,6 @@
 package pay.payment.tests
 
+import configLogger
 import io.restassured.response.Response
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -9,21 +10,29 @@ import org.junit.jupiter.api.AfterEach
 import pay.xprojectdata.client.ApiClient
 import pay.xprojectdata.config.EnvironmentConfig
 import io.restassured.module.jsv.JsonSchemaValidator
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 
 class GET_api_v1_payment_methods {
     private lateinit var apiClient: ApiClient
 
+    companion object {
+        @BeforeAll
+        @JvmStatic
+        fun globalSetup() {
+            configLogger.globalSetup()
+        }
+    }
+
     @BeforeEach
     fun setUp() {
         val config = EnvironmentConfig.getConfigFromEnvVar()
         apiClient = ApiClient(config)
-        //ApiLogger.enableLogging(logBody = true) // Включаем полное логирование
     }
 
     @AfterEach
     fun tearDown() {
-        //ApiLogger.disableLogging()
+
     }
 
     @Test
@@ -36,6 +45,7 @@ class GET_api_v1_payment_methods {
             .then()
             .statusCode(200)
             .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("pay.payment.jsonschema/GET_api_v1_payment_methods.json"))
+
     }
 
     @Test

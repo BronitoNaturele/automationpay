@@ -21,6 +21,7 @@ import kotlin.test.assertNotNull
 import java.time.Duration
 import java.lang.Thread.sleep
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeAll
 
 class PUT_api_v1_payment_confirm_SberGate {
     private lateinit var apiClient: ApiClient
@@ -29,6 +30,14 @@ class PUT_api_v1_payment_confirm_SberGate {
     private fun getJsonPath(response: Response): JsonPath {
         val json = response.asString()
         return JsonPath.from(json)
+    }
+
+    companion object {
+        @BeforeAll
+        @JvmStatic
+        fun globalSetup() {
+            configLogger.globalSetup()
+        }
     }
 
     @BeforeEach
