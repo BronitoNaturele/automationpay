@@ -45,8 +45,8 @@ kotlin {
 
 tasks.test {
     useJUnitPlatform()
-    systemProperties["allure.results.directory"] = "$rootDir/allure-results"
-    systemProperties["allure.report.directory"] = "$rootDir/allure-report"
+    systemProperties["allure.results.directory"] = "build/allure-results"
+    systemProperties["allure.report.directory"] = "build/allure-report"
     systemProperty("API_TOKEN", project.property("API_TOKEN") as String)
     testLogging {
         events("passed", "skipped", "failed", "standardOut", "standardError")
@@ -57,7 +57,7 @@ tasks.test {
 
 // Настройки очистки отчёта Allure
 tasks.register("cleanAllureResults") {
-    delete("$rootDir/allure-results")
+    delete("build/allure-results")
 }
 
 tasks.named("test") {
