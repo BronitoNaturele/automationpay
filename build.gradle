@@ -1,14 +1,15 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '2.2.21'
+    id "io.qameta.allure" version "3.0.1"
 }
-
-group = 'ru.example'
-version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
+
+group = 'ru.example'
+version = '1.0-SNAPSHOT'
 
 dependencies {
 
@@ -27,14 +28,30 @@ dependencies {
 
     testImplementation ("com.codeborne:selenide-proxy:7.14.0")
 
-}
+    testImplementation("io.qameta.allure:allure-selenide:2.32.0")
+    testImplementation("io.qameta.allure:allure-rest-assured:2.32.0")
+    testImplementation 'io.qameta.allure:allure-junit5:2.32.0'
 
-test {
-    useJUnitPlatform()
 }
 
 kotlin {
     jvmToolchain(21)
+}
+
+tasks.test {
+    useJUnitPlatform()
+    systemProperties["allure.results.directory"] = "$rootDir/allure-results"
+    systemProperties["allure.report.directory"] = "$rootDir/allure-report"
+    systemProperty("API_TOKEN", project.property("API_TOKEN") as String)
+}
+
+// Настройки очистки отчёта Allure
+tasks.register("cleanAllureResults") {
+    delete("$rootDir/allure-results")
+}
+
+tasks.named("test") {
+    dependsOn("cleanAllureResults")
 }
 
 //sourceSets {

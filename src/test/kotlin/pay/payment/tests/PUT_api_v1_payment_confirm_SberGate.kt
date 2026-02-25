@@ -105,33 +105,45 @@ class PUT_api_v1_payment_confirm_SberGate {
         elementButtonSubmit.click()
 
         // Задержка по секундам
-        val durationMillis = Duration.ofSeconds(20).toMillis()
+        val durationMillis = Duration.ofSeconds(10).toMillis()
         try {
             sleep(durationMillis)
         } catch (e: InterruptedException) {
             e.printStackTrace()
         }
 
-        //Проверяем статус транзакции
-        val basePathForCheckTransactionStatus = "/api/v1/payment/status/" + extractedId.toIntOrNull()
+        //Проверяем статус транзакции = 3
+        val basePathForCheckTransactionStatusHold = "/api/v1/payment/status/" + extractedId.toIntOrNull()
         val responseGetCheckTransaction: Response = apiClient.get(
-            path = basePathForCheckTransactionStatus,
+            path = basePathForCheckTransactionStatusHold,
             headers = emptyMap()
         )
 
         // Валидация ответа
-        responseGetCheckTransaction.then()
-            .statusCode(200)
-            .body(
-                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+            responseGetCheckTransaction
+                .then()
+                .statusCode(200)
+                .body(JsonSchemaValidator.matchesJsonSchemaInClasspath(
                     "pay.payment.jsonschema/GET_api_v1_payment_status_id_SberGate.json"
-                )
-            )
+                ))
+
+        val jsonBody = JsonPath.from(responseGetCheckTransaction.body.asString())
+
+        // Обязательные непустые поля
+        assertNotNull(jsonBody.get("id"), "Поле 'id' не должно быть null")
+        assertTrue(jsonBody.getString("transaction_id").isNotEmpty(), "Поле 'transaction_id' не должно быть пустым")
+        assertTrue(jsonBody.getString("statusText").isNotEmpty(), "Поле 'statusText' не должно быть пустым")
+        assertTrue(jsonBody.getString("updated").isNotEmpty(), "Поле 'updated' не должно быть пустым")
+        assertTrue(jsonBody.getString("payment_details.system_id").isNotEmpty(), "Поле 'payment_details.system_id' не должно быть пустым")
+
+        // Проблемные поля — проверяем, что они пустые (как в ваших данных)
+        assertEquals("", jsonBody.getString("payment_details.entity_type"), "Поле 'payment_details.entity_type' должно быть пустой строкой")
+        assertEquals("", jsonBody.getString("payment_details.entity_info"), "Поле 'payment_details.entity_info' должно быть пустой строкой")
 
         // Извлечение данных
-        val jsonPathStatus = getJsonPath(responseGetCheckTransaction)
-        val status = jsonPathStatus.getInt("status")
-        val statusText = jsonPathStatus.getString("statusText")
+        val jsonPathStatusHold = getJsonPath(responseGetCheckTransaction)
+        val status = jsonPathStatusHold.getInt("status")
+        val statusText = jsonPathStatusHold.getString("statusText")
 
         // Проверка значений полей
         assertEquals(3, status)
@@ -166,6 +178,33 @@ class PUT_api_v1_payment_confirm_SberGate {
         assertNotNull(success, "Поле success = Null")
         assertTrue(success, "Ожидалось true, но получено: $success")
 
-        //Тут надо будет дописать(когда будет готово) запрос на проверку статуса транзакции
+        // Проверка статуса транзакции = 5
+        val basePathForCheckTransactionStatusSuccessful = "/api/v1/payment/status/" + extractedId.toIntOrNull()
+        val responseGetCheckTransactionSuccess: Response = apiClient.get(
+            path = basePathForCheckTransactionStatusSuccessful,
+            headers = emptyMap()
+        )
+
+        val jsonBodyGetFinalStatus = JsonPath.from(responseGetCheckTransactionSuccess.body.asString())
+
+        // Обязательные непустые поля
+        assertNotNull(jsonBodyGetFinalStatus.get("id"), "Поле 'id' не должно быть null")
+        assertTrue(jsonBodyGetFinalStatus.getString("transaction_id").isNotEmpty(), "Поле 'transaction_id' не должно быть пустым")
+        assertTrue(jsonBodyGetFinalStatus.getString("statusText").isNotEmpty(), "Поле 'statusText' не должно быть пустым")
+        assertTrue(jsonBodyGetFinalStatus.getString("updated").isNotEmpty(), "Поле 'updated' не должно быть пустым")
+        assertTrue(jsonBodyGetFinalStatus.getString("payment_details.system_id").isNotEmpty(), "Поле 'payment_details.system_id' не должно быть пустым")
+
+        // Проблемные поля — проверяем, что они пустые (как в ваших данных)
+        assertEquals("", jsonBody.getString("payment_details.entity_type"), "Поле 'payment_details.entity_type' должно быть пустой строкой")
+        assertEquals("", jsonBody.getString("payment_details.entity_info"), "Поле 'payment_details.entity_info' должно быть пустой строкой")
+
+        // Извлечение данных
+        val jsonPathFinalStatus  = getJsonPath(responseGetCheckTransactionSuccess)
+        val finalStatus  = jsonPathFinalStatus.getInt("status")
+        val finalStatusText  = jsonPathFinalStatus.getString("statusText")
+
+        // Проверка значений полей
+        assertEquals(5, status)
+        assertEquals("Списание успешно", statusText)
     }
 }
