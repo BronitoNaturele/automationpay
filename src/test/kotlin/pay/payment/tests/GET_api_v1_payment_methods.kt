@@ -13,7 +13,7 @@ import io.restassured.module.jsv.JsonSchemaValidator
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 
-class GET_api_v1_payment_methods {
+class GETApiV1PaymentMethods {
     private lateinit var apiClient: ApiClient
 
     companion object {

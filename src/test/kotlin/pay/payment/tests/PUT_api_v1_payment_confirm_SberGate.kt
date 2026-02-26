@@ -23,15 +23,17 @@ import kotlin.test.assertNotNull
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 
-class PUT_api_v1_payment_confirm_SberGate {
+class PUTApiV1PaymentConfirmSberGate {
     private lateinit var apiClient: ApiClient
     private var extractedId: String = ""
+
     // Валидация Json
     private fun getJsonPath(response: Response): JsonPath {
         val json = response.asString()
         return JsonPath.from(json)
     }
 
+    // Логгер
     companion object {
         @BeforeAll
         @JvmStatic
@@ -54,6 +56,7 @@ class PUT_api_v1_payment_confirm_SberGate {
 
     }
 
+    // Проверка статуса транзакции с умным ожиданием
     private fun checkTransactionStatus(
         extractedId: String,
         expectedStatus: Int,

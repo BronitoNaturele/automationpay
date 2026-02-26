@@ -48,11 +48,18 @@ tasks.test {
     systemProperties["allure.results.directory"] = "build/allure-results"
     systemProperties["allure.report.directory"] = "build/allure-report"
     systemProperty("API_TOKEN", project.property("API_TOKEN") as String)
+
+    // Настройка генерации XML-отчётов для TestIT CLI
+    reports {
+        junitXml.required.set(true)
+        junitXml.outputLocation.set(layout.buildDirectory.dir("test-results/junit"))
+    }
     testLogging {
         events("passed", "skipped", "failed", "standardOut", "standardError")
         showStandardStreams = true
         exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
     }
+
 }
 
 // Настройки очистки отчёта Allure

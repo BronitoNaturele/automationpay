@@ -18,7 +18,7 @@ import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 
-class POST_api_v1_payment_pay_method_uuid_SberGate {
+class POSTApiV1PaymentPayMethodUuidSberGate {
 
     private lateinit var apiClient: ApiClient
     val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
