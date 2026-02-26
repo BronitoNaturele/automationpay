@@ -17,6 +17,7 @@ import io.restassured.module.jsv.JsonSchemaValidator
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
+import ru.testit.annotations.WorkItemIds
 
 class POSTApiV1PaymentPayMethodUuidSberGate {
 
@@ -291,6 +292,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
+    @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
     @DisplayName("400 - no amount")
     fun noAmount(){
         val noAmountRequestBody = SberGateRequestGenerator.noAmountRequest().copy()
@@ -310,6 +312,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
+    @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
     @DisplayName("400 - no mobile")
     fun noMobile(){
         val noMobileRequestBody = SberGateRequestGenerator.noMobileRequest().copy()
@@ -329,6 +332,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
+    @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
     @DisplayName("400 - no platform")
     fun noPlatform(){
         val noPlatformRequestBody = SberGateRequestGenerator.noPlatformRequest().copy()
@@ -348,6 +352,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
+    @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
     @DisplayName("400 - no invoice_id")
     fun noInvoiceId(){
         val noInvoiceIDRequestBody = SberGateRequestGenerator.noInvoiceIdRequest().copy()

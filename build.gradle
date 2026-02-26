@@ -16,6 +16,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+    implementation("org.junit.jupiter:junit-jupiter-api")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:2.2.21")
     testImplementation("org.jetbrains.kotlin:kotlin-test:2.2.21")
@@ -36,6 +37,9 @@ dependencies {
     testImplementation("io.github.oshai:kotlin-logging-jvm:8.0.01")
     testImplementation("org.slf4j:slf4j-simple:2.0.9")
 
+    implementation "ru.testit:testit-adapter-junit5:2.3.4"
+    testImplementation "ru.testit:testit-java-commons:2.3.4"
+
 
 }
 
@@ -54,6 +58,8 @@ tasks.test {
         junitXml.required.set(true)
         junitXml.outputLocation.set(layout.buildDirectory.dir("test-results/junit"))
     }
+    systemProperty("junit.jupiter.extensions.autodetection.enabled", true)
+
     testLogging {
         events("passed", "skipped", "failed", "standardOut", "standardError")
         showStandardStreams = true

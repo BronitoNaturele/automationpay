@@ -1,4 +1,4 @@
-.env.example
+testit.properties
 gradle.properties
 .gradle
 build/
