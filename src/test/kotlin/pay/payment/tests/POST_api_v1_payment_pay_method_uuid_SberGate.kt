@@ -1,29 +1,27 @@
 package pay.payment.tests
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import configLogger
+import io.restassured.RestAssured
+import io.restassured.module.jsv.JsonSchemaValidator
+import io.restassured.path.json.JsonPath
 import io.restassured.response.Response
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.AfterEach
-
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import pay.xprojectdata.client.ApiClient
 import pay.xprojectdata.config.EnvironmentConfig
-import pay.xprojectdata.dto.request.Fields
-import pay.xprojectdata.dto.request.NullFields
-import pay.xprojectdata.dto.request.NullPayloadItem
-import pay.xprojectdata.dto.request.PayloadItem
-import pay.xprojectdata.dto.request.SberGateNullFieldsRequestGenerator
-import pay.xprojectdata.dto.request.SberGateRequestGenerator
-import io.restassured.module.jsv.JsonSchemaValidator
-import org.hamcrest.Matchers.*
-import org.junit.jupiter.api.BeforeAll
-
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Tag
+import pay.xprojectdata.dto.request.*
+import pay.xprojectdata.dto.response.errorNoMethodPayMethodUuidResponseBodySberGate
+import pay.xprojectdata.dto.response.errorPayMethodUuidResponseBodySberGate
 import ru.testit.annotations.WorkItemIds
+import kotlin.test.assertNotNull
 
 class POSTApiV1PaymentPayMethodUuidSberGate {
-
     private lateinit var apiClient: ApiClient
+    private val mapper = jacksonObjectMapper()
     val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
 
     companion object {
@@ -55,7 +53,10 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
-    @DisplayName("202.Проверка валидации JSON схемы ответа")
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("e3faba9c-6dff-432a-946d-6eab13fdea57")
+    @DisplayName("Успешное выполнение запроса. 202.Проверка валидации JSON схемы ответа")
     fun validatingTheJsonSchemeToTheResponseWithMethodUuid() {
         //Подготовка тела запроса
         val requestBody = SberGateRequestGenerator.baseRequest()
@@ -74,6 +75,209 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                     "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
                 )
             )
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("ca652d14-a6be-47f3-8bd7-688804ae0605")
+    @DisplayName("Ошибка авторизации. 401. Отсутствует токен")
+    fun noTokenSberGate() {
+        val response = RestAssured
+            .given()
+            .post("/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251")
+
+        // Валидируем статус
+        response.then().statusCode(401)
+
+        // Парсим в DTO
+        val paymentResponse: errorPayMethodUuidResponseBodySberGate = mapper.readValue(
+            response.asString(),
+            errorPayMethodUuidResponseBodySberGate::class.java
+        )
+
+        // Проверяем поля с помощью JUnit assertions
+        assertEquals(
+            "Ошибка авторизации или данная операция запрещена правами доступа",
+            paymentResponse.error_message,
+            "Поле error_message должно содержать сообщение об ошибке авторизации"
+        )
+        assertEquals(
+            "S0.000002",
+            paymentResponse.error_code,
+            "Поле error_code должно быть равно S0.000002"
+        )
+        assertEquals(
+            "UNAUTHORIZED",
+            paymentResponse.type_error,
+            "Поле type_error должно быть равно UNAUTHORIZED"
+        )
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("ca652d14-a6be-47f3-8bd7-688804ae0605")
+    @DisplayName("Ошибка авторизации. 401. Токен не валиден")
+    fun noValidTokenSberGate() {
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        val response = RestAssured
+            .given()
+            .body(requestBody)
+            .header("Authorization", "Bearer e26ABDDy9HTV0gFoX1uCwdld9uSSjEYlrV7v0qrs2OfZOONm223XLMLKasdasd9GyPDMJFpmMIQLSPkG9XfCzT")
+            .post("/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251")
+
+        // Валидируем статус
+        response.then().statusCode(401)
+
+        // Парсим в DTO
+        val paymentResponse: errorPayMethodUuidResponseBodySberGate = mapper.readValue(
+            response.asString(),
+            errorPayMethodUuidResponseBodySberGate::class.java
+        )
+
+        // Проверяем поля с помощью JUnit assertions
+        assertEquals(
+            "Ошибка авторизации или данная операция запрещена правами доступа",
+            paymentResponse.error_message,
+            "Поле error_message должно содержать сообщение об ошибке авторизации"
+        )
+        assertEquals(
+            "S0.000002",
+            paymentResponse.error_code,
+            "Поле error_code должно быть равно S0.000002"
+        )
+        assertEquals(
+            "UNAUTHORIZED",
+            paymentResponse.type_error,
+            "Поле type_error должно быть равно UNAUTHORIZED"
+        )
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("f4c9eb2f-8270-40fa-8be1-19fd697ba794")
+    @DisplayName("Не валидный method_uuid в url. 406")
+    fun notValidMethodUuidSberGate() {
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        //Выполнение POST-запроса
+        val response: Response = apiClient.post(
+            path = "/api/v1/payment/pay/123",
+            body = requestBody,
+            headers = emptyMap() // если нужны дополнительные заголовки — передайте их
+        )
+        // Валидируем статус
+        response.then().statusCode(406)
+
+        // Парсим в DTO
+        val paymentResponse: errorPayMethodUuidResponseBodySberGate = mapper.readValue(
+            response.asString(),
+            errorPayMethodUuidResponseBodySberGate::class.java
+        )
+
+        // Проверяем поля с помощью JUnit assertions
+        assertEquals(
+            "Данный метод недоступен для платежа",
+            paymentResponse.error_message,
+            "Поле error_message должно содержать сообщение об ошибке авторизации"
+        )
+        assertEquals(
+            "S0.000005",
+            paymentResponse.error_code,
+            "Поле error_code должно быть равно S0.000005"
+        )
+        assertEquals(
+            "NOT_ACCEPTABLE",
+            paymentResponse.type_error,
+            "Поле type_error должно быть равно NOT_ACCEPTABLE"
+        )
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("9a4b67b2-7661-420f-afcf-dd291cf18944")
+    @DisplayName("Не передан method_uuid в url. 405")
+    fun noMethodUuidSberGate() {
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        //Выполнение POST-запроса
+        val response: Response = apiClient.post(
+            path = "/api/v1/payment/pay/",
+            body = requestBody,
+            headers = emptyMap() // если нужны дополнительные заголовки — передайте их
+        )
+        // Валидируем статус
+        response.then().statusCode(405)
+
+        // Парсим в DTO
+        val paymentResponse: errorNoMethodPayMethodUuidResponseBodySberGate = mapper.readValue(
+            response.asString(),
+            errorNoMethodPayMethodUuidResponseBodySberGate::class.java
+        )
+
+        // Проверяем поля с помощью JUnit assertions
+        assertEquals(
+            "The POST method is not supported for route api/v1/payment/pay. Supported methods: GET, HEAD.",
+            paymentResponse.error_message,
+            "Поле error_message должно содержать сообщение об ошибке авторизации"
+        )
+        assertEquals(
+            "405",
+            paymentResponse.error_code,
+            "Поле error_code должно быть равно 405"
+        )
+        assertEquals(
+            "METHOD_NOT_ALLOWED",
+            paymentResponse.type_error,
+            "Поле type_error должно быть равно METHOD_NOT_ALLOWED"
+        )
+    }
+
+    // Тут надо будет добавить проверку через ручку админки, когда будет готова
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("9e3222a9-f266-4743-8d4b-8af1ebb52a06")
+    @DisplayName("202. Повторное проведение платежа с тем же invoice_id")
+    fun repeatInvoiceId() {
+        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
+            invoice_id = "123456789"
+        )
+
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = modifiedRequest,
+            headers = emptyMap()
+        )
+
+        //Валидация ответа (единая цепочка)
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+
+        val modifiedRequestRepeatId = SberGateRequestGenerator.baseRequest().copy(
+            invoice_id = "123456789"
+        )
+
+        val responseRepeat: Response = apiClient.post(
+            path = basePath,
+            body = modifiedRequestRepeatId,
+            headers = emptyMap()
+        )
+
+        responseRepeat.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+
     }
 
     @Test

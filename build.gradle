@@ -47,11 +47,12 @@ kotlin {
     jvmToolchain(21)
 }
 
+
 tasks.test {
     useJUnitPlatform()
     systemProperties["allure.results.directory"] = "build/allure-results"
     systemProperties["allure.report.directory"] = "build/allure-report"
-    systemProperty("API_TOKEN", project.property("API_TOKEN") as String)
+    systemProperty("API_TOKEN", project.findProperty("API_TOKEN"))
 
     // Настройка генерации XML-отчётов для TestIT CLI
     reports {
