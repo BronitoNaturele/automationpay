@@ -16,7 +16,9 @@ import pay.xprojectdata.dto.request.SberGateRequestGenerator
 import io.restassured.module.jsv.JsonSchemaValidator
 import org.hamcrest.Matchers.*
 import org.junit.jupiter.api.BeforeAll
+
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Tag
 import ru.testit.annotations.WorkItemIds
 
 class POSTApiV1PaymentPayMethodUuidSberGate {
@@ -41,7 +43,15 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
 
     @AfterEach
     fun tearDown() {
-        // ApiLogger.disableLogging()
+        try {
+            // Закрываем HTTP‑соединения
+            io.restassured.RestAssured.reset()
+
+            // Принудительное завершение потоков (если есть кастомные пулы)
+            // ExecutorService?.shutdown()
+        } catch (e: Exception) {
+            println("Ошибка при очистке: ${e.message}")
+        }
     }
 
     @Test
@@ -292,6 +302,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
+    @Tag("reqfield")
     @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
     @DisplayName("400 - no amount")
     fun noAmount(){
@@ -312,6 +323,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
+    @Tag("reqfield")
     @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
     @DisplayName("400 - no mobile")
     fun noMobile(){
@@ -352,6 +364,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     }
 
     @Test
+    @Tag("reqfield")
     @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
     @DisplayName("400 - no invoice_id")
     fun noInvoiceId(){

@@ -52,8 +52,15 @@ class PUTApiV1PaymentConfirmSberGate {
 
     @AfterEach
     fun tearDown() {
-        //ApiLogger.disableLogging()
+        try {
+            // Закрываем HTTP‑соединения
+            io.restassured.RestAssured.reset()
 
+            // Принудительное завершение потоков (если есть кастомные пулы)
+            // ExecutorService?.shutdown()
+        } catch (e: Exception) {
+            println("Ошибка при очистке: ${e.message}")
+        }
     }
 
     // Проверка статуса транзакции с умным ожиданием

@@ -1,4 +1,4 @@
-//Модели данных (DTO). RequestDTO. Описывают структуру ответов
+// Модели данных (DTO). RequestDTO. Описывают структуру ответов
 
 package pay.xprojectdata.dto.response
 
@@ -12,4 +12,11 @@ data class PaymentMethod(
     val uuid: String,
     val type_id: Int,
     val weight: Int
+)
+
+// Тело ответа для 401
+data class noTokenBody(
+    val error_message: String,
+    val error_code: String,
+    val type_error: String
 )
