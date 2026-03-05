@@ -6,22 +6,25 @@ import com.codeborne.selenide.SelenideElement
 import io.restassured.module.jsv.JsonSchemaValidator
 import io.restassured.path.json.JsonPath
 import io.restassured.response.Response
+import org.hamcrest.Matchers.equalTo
+import org.hamcrest.Matchers.hasItem
 
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Tag
 
 import pay.xprojectdata.client.ApiClient
 import pay.xprojectdata.config.EnvironmentConfig
 import pay.xprojectdata.dto.request.SberGateRequestGenerator
 import pay.xprojectdata.dto.request.sberGateBodyRequestForConfirmPutRequestGenerator
+import ru.testit.annotations.WorkItemIds
 
 import kotlin.test.assertNotNull
-
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
 
 class PUTApiV1PaymentConfirmSberGate {
     private lateinit var apiClient: ApiClient
@@ -154,7 +157,6 @@ class PUTApiV1PaymentConfirmSberGate {
             body = requestBody,
             headers = emptyMap() // если нужны дополнительные заголовки — передайте их
         )
-
         //Валидация ответа и извлечение url
         response.then()
             .statusCode(202)
@@ -237,5 +239,52 @@ class PUTApiV1PaymentConfirmSberGate {
 
         // Проверка статуса транзакции = 5
         checkTransactionStatus(extractedId, 5, "Списание успешно", "Проверка статуса Списание успешно")
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("e99a51e6-2bfa-4ba6-9ebf-e2b40d20f02a")
+    @DisplayName("404. Подтверждение транзакций, находящихся в статусе Новая. Картой СГ")
+    fun errorConfirmSberGate() {
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = requestBody,
+            headers = emptyMap()
+        )
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+            .extract()
+            .jsonPath()
+
+        val jsonPathPost = getJsonPath(response)
+        val extractedId = jsonPathPost.getString("id")
+
+        println("Извлечённый ID: $extractedId")
+
+        val basePathForPut = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            id = extractedId.toIntOrNull(),
+        )
+        val responsePut: Response = apiClient.put(
+            path = basePathForPut,
+            body = modifiedRequestBodyPut,
+            headers = emptyMap()
+        )
+        responsePut.then()
+            .statusCode(404)
+            .body(
+                "error_message", equalTo("Транзакция не найдена"),
+                "error_code", equalTo("S0.000011"),
+                "type_error", equalTo("NOT_FOUND")
+            )
+
     }
 }
