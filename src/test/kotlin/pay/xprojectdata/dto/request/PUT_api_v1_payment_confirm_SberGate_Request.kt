@@ -11,7 +11,7 @@ data class sberGateBodyRequestForConfirmPutRequest(
 object sberGateBodyRequestForConfirmPutRequestGenerator {
     fun baseRequest(id: Int? = null): sberGateBodyRequestForConfirmPutRequest {
         return sberGateBodyRequestForConfirmPutRequest(
-            amount = "2",
+            amount = 2,
             id = id
         )
     }

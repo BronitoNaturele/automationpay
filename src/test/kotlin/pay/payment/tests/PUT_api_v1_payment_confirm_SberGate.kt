@@ -7,10 +7,8 @@ import io.restassured.module.jsv.JsonSchemaValidator
 import io.restassured.path.json.JsonPath
 import io.restassured.response.Response
 import org.hamcrest.Matchers.equalTo
-import org.hamcrest.Matchers.hasItem
 
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
@@ -49,8 +47,6 @@ class PUTApiV1PaymentConfirmSberGate {
     fun setUp() {
         val config = EnvironmentConfig.getConfigFromEnvVar()
         apiClient = ApiClient(config)
-
-        //ApiLogger.enableLogging(logBody = true) // Включаем полное логирование
     }
 
     @AfterEach
@@ -154,8 +150,7 @@ class PUTApiV1PaymentConfirmSberGate {
         //Выполнение POST-запроса
         val response: Response = apiClient.post(
             path = basePath,
-            body = requestBody,
-            headers = emptyMap() // если нужны дополнительные заголовки — передайте их
+            body = requestBody
         )
         //Валидация ответа и извлечение url
         response.then()
@@ -211,16 +206,14 @@ class PUTApiV1PaymentConfirmSberGate {
         //Подготовка тела PUT запроса на подтверждение платежа
         val basePathForPut = "/api/v1/payment/confirm"
         val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
-            id = extractedId.toIntOrNull(),
+            amount = 2,
+            id = extractedId.toIntOrNull()
         )
-
         //Выполнение PUT-запроса
         val responsePut: Response = apiClient.put(
             path = basePathForPut,
-            body = modifiedRequestBodyPut,
-            headers = emptyMap() // если нужны дополнительные заголовки — передайте их
+            body = modifiedRequestBodyPut
         )
-
         // Валидация ответа
         responsePut.then()
             .statusCode(200)
@@ -229,7 +222,6 @@ class PUTApiV1PaymentConfirmSberGate {
                     "pay.payment.jsonschema/PUT_api_v1_payment_confirm.json"
                 )
             )
-
         // Извлечение данных
         val jsonPathPut = getJsonPath(responsePut)
         val success = jsonPathPut.getBoolean("success")
@@ -244,6 +236,248 @@ class PUTApiV1PaymentConfirmSberGate {
     @Test
     @Tag("regression")
     @Tag("smoke")
+    @WorkItemIds("58c8588e-c8e5-40de-91d0-89e76d7657f5")
+    @DisplayName("200. Успешное выполнение запроса Картой СГ.")
+    fun successConfirmAmountEqualOrderSberGate() {
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = requestBody
+        )
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+            .extract()
+            .jsonPath()
+
+        val jsonPathPost = getJsonPath(response)
+        val extractedUrl = jsonPathPost.getString("url")
+        val extractedId = jsonPathPost.getString("id")
+
+        println("Извлечённый URL: $extractedUrl")
+        println("Извлечённый ID: $extractedId")
+
+        assertNotNull(extractedUrl, "Поле url = Null")
+        assertTrue(extractedUrl.isNotEmpty(), "Поле url пустое")
+
+        assertNotNull(extractedId, "Поле id = Null")
+        assertTrue(extractedId.isNotEmpty(), "Поле id пустое")
+
+        open(extractedUrl)
+
+        // Находим элементы на странице и вводим данные
+        val elementCardNumber: SelenideElement = `$`("input[autocomplete='cc-number']").setValue("2202205000012424")// Карта без ACS кода
+        elementCardNumber.should(Condition.exist)
+        elementCardNumber.click()
+
+        val elementCardName: SelenideElement = `$`("input[autocomplete='cc-name']").setValue("zxc zxc")// Имя
+        elementCardName.should(Condition.exist)
+        elementCardName.click()
+
+        val elementCardExpiration: SelenideElement = `$`("input[autocomplete='cc-exp']").setValue("0535")// Срок
+        elementCardExpiration.should(Condition.exist)
+        elementCardExpiration.click()
+
+        val elementCardCVV: SelenideElement = `$`(".inputs_back_cvv input").setValue("669")// CVV
+        elementCardCVV.should(Condition.exist)
+        elementCardCVV.click()
+
+        val elementButtonSubmit: SelenideElement = `$`(".footer_buttons button")
+        elementButtonSubmit.should(Condition.exist)
+        elementButtonSubmit.click()
+
+        checkTransactionStatus(extractedId, 3, "Холдирование", "Проверка статуса (холдирование)")
+
+        val basePathForPut = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            amount = 2,
+            id = extractedId.toIntOrNull()
+        )
+        val responsePut: Response = apiClient.put(
+            path = basePathForPut,
+            body = modifiedRequestBodyPut
+        )
+        responsePut.then()
+            .statusCode(200)
+            .body("success", equalTo(true))
+
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("44ff0e59-b346-41af-9a4c-e054fe573d4d")
+    @DisplayName("200. Подтверждение платежа с передачей amount<суммы заказа в запросе Картой СГ")
+    fun successConfirmAmountLessThanOrderSberGate() {
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = requestBody
+        )
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+            .extract()
+            .jsonPath()
+
+        val jsonPathPost = getJsonPath(response)
+        val extractedUrl = jsonPathPost.getString("url")
+        val extractedId = jsonPathPost.getString("id")
+
+        println("Извлечённый URL: $extractedUrl")
+        println("Извлечённый ID: $extractedId")
+
+        assertNotNull(extractedUrl, "Поле url = Null")
+        assertTrue(extractedUrl.isNotEmpty(), "Поле url пустое")
+
+        assertNotNull(extractedId, "Поле id = Null")
+        assertTrue(extractedId.isNotEmpty(), "Поле id пустое")
+
+        open(extractedUrl)
+
+        // Находим элементы на странице и вводим данные
+        val elementCardNumber: SelenideElement = `$`("input[autocomplete='cc-number']").setValue("2202205000012424")// Карта без ACS кода
+        elementCardNumber.should(Condition.exist)
+        elementCardNumber.click()
+
+        val elementCardName: SelenideElement = `$`("input[autocomplete='cc-name']").setValue("zxc zxc")// Имя
+        elementCardName.should(Condition.exist)
+        elementCardName.click()
+
+        val elementCardExpiration: SelenideElement = `$`("input[autocomplete='cc-exp']").setValue("0535")// Срок
+        elementCardExpiration.should(Condition.exist)
+        elementCardExpiration.click()
+
+        val elementCardCVV: SelenideElement = `$`(".inputs_back_cvv input").setValue("669")// CVV
+        elementCardCVV.should(Condition.exist)
+        elementCardCVV.click()
+
+        val elementButtonSubmit: SelenideElement = `$`(".footer_buttons button")
+        elementButtonSubmit.should(Condition.exist)
+        elementButtonSubmit.click()
+
+        checkTransactionStatus(extractedId, 3, "Холдирование", "Проверка статуса (холдирование)")
+
+        val basePathForPut = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            amount = 1,
+            id = extractedId.toIntOrNull()
+        )
+        val responsePut: Response = apiClient.put(
+            path = basePathForPut,
+            body = modifiedRequestBodyPut
+        )
+        responsePut.then()
+            .statusCode(200)
+            .body("success", equalTo(true))
+
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("a62a5e89-03d1-4e4a-9074-efb15ba82fe7")
+    @DisplayName("200. Подтверждение транзакции, находящейся в статусе Списание успешно Картой СГ")
+    fun successDoubleConfirmSberGate() {
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = requestBody
+        )
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+            .extract()
+            .jsonPath()
+
+        val jsonPathPost = getJsonPath(response)
+        val extractedUrl = jsonPathPost.getString("url")
+        val extractedId = jsonPathPost.getString("id")
+
+        println("Извлечённый URL: $extractedUrl")
+        println("Извлечённый ID: $extractedId")
+
+        assertNotNull(extractedUrl, "Поле url = Null")
+        assertTrue(extractedUrl.isNotEmpty(), "Поле url пустое")
+
+        assertNotNull(extractedId, "Поле id = Null")
+        assertTrue(extractedId.isNotEmpty(), "Поле id пустое")
+
+        open(extractedUrl)
+
+        // Находим элементы на странице и вводим данные
+        val elementCardNumber: SelenideElement = `$`("input[autocomplete='cc-number']").setValue("2202205000012424")// Карта без ACS кода
+        elementCardNumber.should(Condition.exist)
+        elementCardNumber.click()
+
+        val elementCardName: SelenideElement = `$`("input[autocomplete='cc-name']").setValue("zxc zxc")// Имя
+        elementCardName.should(Condition.exist)
+        elementCardName.click()
+
+        val elementCardExpiration: SelenideElement = `$`("input[autocomplete='cc-exp']").setValue("0535")// Срок
+        elementCardExpiration.should(Condition.exist)
+        elementCardExpiration.click()
+
+        val elementCardCVV: SelenideElement = `$`(".inputs_back_cvv input").setValue("669")// CVV
+        elementCardCVV.should(Condition.exist)
+        elementCardCVV.click()
+
+        val elementButtonSubmit: SelenideElement = `$`(".footer_buttons button")
+        elementButtonSubmit.should(Condition.exist)
+        elementButtonSubmit.click()
+
+        checkTransactionStatus(extractedId, 3, "Холдирование", "Проверка статуса (холдирование)")
+
+        val basePathForPut = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            amount = 2,
+            id = extractedId.toIntOrNull()
+        )
+        val responsePut: Response = apiClient.put(
+            path = basePathForPut,
+            body = modifiedRequestBodyPut
+        )
+        responsePut.then()
+            .statusCode(200)
+            .body("success", equalTo(true))
+
+        checkTransactionStatus(extractedId, 5, "Списание успешно", "Проверка статуса (Списание успешно)")
+
+        val basePathForPutDouble = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPutDouble = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            amount = 2,
+            id = extractedId.toIntOrNull()
+        )
+        val responsePutDouble: Response = apiClient.put(
+            path = basePathForPutDouble,
+            body = modifiedRequestBodyPutDouble
+        )
+        responsePutDouble.then()
+            .statusCode(200)
+            .body("success", equalTo(true))
+
+        checkTransactionStatus(extractedId, 5, "Списание успешно", "Проверка статуса (Списание успешно)")
+
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
     @WorkItemIds("e99a51e6-2bfa-4ba6-9ebf-e2b40d20f02a")
     @DisplayName("404. Подтверждение транзакций, находящихся в статусе Новая. Картой СГ")
     fun errorConfirmSberGate() {
@@ -251,8 +485,7 @@ class PUTApiV1PaymentConfirmSberGate {
         val requestBody = SberGateRequestGenerator.baseRequest()
         val response: Response = apiClient.post(
             path = basePath,
-            body = requestBody,
-            headers = emptyMap()
+            body = requestBody
         )
         response.then()
             .statusCode(202)
@@ -271,20 +504,176 @@ class PUTApiV1PaymentConfirmSberGate {
 
         val basePathForPut = "/api/v1/payment/confirm"
         val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
-            id = extractedId.toIntOrNull(),
+            amount = 2,
+            id = extractedId.toIntOrNull()
         )
         val responsePut: Response = apiClient.put(
             path = basePathForPut,
-            body = modifiedRequestBodyPut,
-            headers = emptyMap()
+            body = modifiedRequestBodyPut
         )
         responsePut.then()
             .statusCode(404)
-            .body(
-                "error_message", equalTo("Транзакция не найдена"),
-                "error_code", equalTo("S0.000011"),
-                "type_error", equalTo("NOT_FOUND")
-            )
+            .body("error_message", equalTo("Транзакция не найдена"))
+            .body("error_code", equalTo("S0.000011"))
+            .body("type_error", equalTo("NOT_FOUND"))
 
     }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("96c916ae-3ef2-4fa7-886e-1fb142759eb4")
+    @DisplayName("422. Подтверждение платежа с передачей amount=0 в запросе Картой СГ")
+    fun errorConfirmAmountZeroSberGate() {
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = requestBody
+        )
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+            .extract()
+            .jsonPath()
+
+        val jsonPathPost = getJsonPath(response)
+        val extractedUrl = jsonPathPost.getString("url")
+        val extractedId = jsonPathPost.getString("id")
+
+        println("Извлечённый URL: $extractedUrl")
+        println("Извлечённый ID: $extractedId")
+
+        assertNotNull(extractedUrl, "Поле url = Null")
+        assertTrue(extractedUrl.isNotEmpty(), "Поле url пустое")
+
+        assertNotNull(extractedId, "Поле id = Null")
+        assertTrue(extractedId.isNotEmpty(), "Поле id пустое")
+
+        open(extractedUrl)
+
+        // Находим элементы на странице и вводим данные
+        val elementCardNumber: SelenideElement = `$`("input[autocomplete='cc-number']").setValue("2202205000012424")// Карта без ACS кода
+        elementCardNumber.should(Condition.exist)
+        elementCardNumber.click()
+
+        val elementCardName: SelenideElement = `$`("input[autocomplete='cc-name']").setValue("zxc zxc")// Имя
+        elementCardName.should(Condition.exist)
+        elementCardName.click()
+
+        val elementCardExpiration: SelenideElement = `$`("input[autocomplete='cc-exp']").setValue("0535")// Срок
+        elementCardExpiration.should(Condition.exist)
+        elementCardExpiration.click()
+
+        val elementCardCVV: SelenideElement = `$`(".inputs_back_cvv input").setValue("669")// CVV
+        elementCardCVV.should(Condition.exist)
+        elementCardCVV.click()
+
+        val elementButtonSubmit: SelenideElement = `$`(".footer_buttons button")
+        elementButtonSubmit.should(Condition.exist)
+        elementButtonSubmit.click()
+
+        checkTransactionStatus(extractedId, 3, "Холдирование", "Проверка статуса (холдирование)")
+
+        val basePathForPut = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            amount = 0,
+            id = extractedId.toIntOrNull()
+        )
+        val responsePut: Response = apiClient.put(
+            path = basePathForPut,
+            body = modifiedRequestBodyPut
+        )
+        responsePut.then()
+            .statusCode(422)
+            .body("error_code", equalTo(422))
+            .body("error_message", equalTo("Не верные переданные данные в апи"))
+            .body("type_error", equalTo("UNPROCESSABLE_CONTENT"))
+            .body("errors.amount[0]", equalTo("Поле amount должно быть не меньше 0.01."))
+
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("b7877b2b-c8bd-4824-b34f-07c0675be5c3")
+    @DisplayName("424. Подтверждение платежа с передачей amount>суммы заказа в запросе Картой СГ")
+    fun errorConfirmAmountMoreThanOrderSberGate() {
+        val basePath = "/api/v1/payment/pay/d96d0e7f-771a-4c85-9f13-5eda4bca9251"
+        val requestBody = SberGateRequestGenerator.baseRequest()
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = requestBody
+        )
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+            .extract()
+            .jsonPath()
+
+        val jsonPathPost = getJsonPath(response)
+        val extractedUrl = jsonPathPost.getString("url")
+        val extractedId = jsonPathPost.getString("id")
+
+        println("Извлечённый URL: $extractedUrl")
+        println("Извлечённый ID: $extractedId")
+
+        assertNotNull(extractedUrl, "Поле url = Null")
+        assertTrue(extractedUrl.isNotEmpty(), "Поле url пустое")
+
+        assertNotNull(extractedId, "Поле id = Null")
+        assertTrue(extractedId.isNotEmpty(), "Поле id пустое")
+
+        open(extractedUrl)
+
+        // Находим элементы на странице и вводим данные
+        val elementCardNumber: SelenideElement = `$`("input[autocomplete='cc-number']").setValue("2202205000012424")// Карта без ACS кода
+        elementCardNumber.should(Condition.exist)
+        elementCardNumber.click()
+
+        val elementCardName: SelenideElement = `$`("input[autocomplete='cc-name']").setValue("zxc zxc")// Имя
+        elementCardName.should(Condition.exist)
+        elementCardName.click()
+
+        val elementCardExpiration: SelenideElement = `$`("input[autocomplete='cc-exp']").setValue("0535")// Срок
+        elementCardExpiration.should(Condition.exist)
+        elementCardExpiration.click()
+
+        val elementCardCVV: SelenideElement = `$`(".inputs_back_cvv input").setValue("669")// CVV
+        elementCardCVV.should(Condition.exist)
+        elementCardCVV.click()
+
+        val elementButtonSubmit: SelenideElement = `$`(".footer_buttons button")
+        elementButtonSubmit.should(Condition.exist)
+        elementButtonSubmit.click()
+
+        checkTransactionStatus(extractedId, 3, "Холдирование", "Проверка статуса (холдирование)")
+
+        val basePathForPut = "/api/v1/payment/confirm"
+        val modifiedRequestBodyPut = sberGateBodyRequestForConfirmPutRequestGenerator.baseRequest().copy(
+            amount = 5,
+            id = extractedId.toIntOrNull()
+        )
+        val responsePut: Response = apiClient.put(
+            path = basePathForPut,
+            body = modifiedRequestBodyPut
+        )
+        responsePut.then()
+            .statusCode(424)
+            .body("error_message", equalTo("При оплате возникла ошибка. Нет связи с вашим банком. Повторите попытку оплаты другой картой. (0029)"))
+            .body("error_code", equalTo("S0.000029"))
+            .body("type_error", equalTo("EXTERNAL_ERROR"))
+            .body("transaction_id", equalTo(extractedId.toIntOrNull()))
+            .body("error_description", equalTo("Сумма завершения превышает сумму холдирования"))
+
+    }
+
 }
