@@ -185,7 +185,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("e3faba9c-6dff-432a-946d-6eab13fdea57")
-    @DisplayName("Успешное выполнение запроса. 202.Проверка валидации JSON схемы ответа")
+    @DisplayName("202. Успешное выполнение запроса. Проверка валидации JSON схемы ответа")
     fun validatingTheJsonSchemeToTheResponseWithMethodUuid() {
         //Подготовка тела запроса
         val requestBody = SberGateRequestGenerator.baseRequest()
@@ -210,7 +210,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("ca652d14-a6be-47f3-8bd7-688804ae0605")
-    @DisplayName("Ошибка авторизации. 401. Отсутствует токен")
+    @DisplayName("401. Ошибка авторизации. Отсутствует токен")
     fun noTokenSberGate() {
         val response = RestAssured
             .given()
@@ -247,7 +247,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("ca652d14-a6be-47f3-8bd7-688804ae0605")
-    @DisplayName("Ошибка авторизации. 401. Токен не валиден")
+    @DisplayName("401. Ошибка авторизации. Токен не валиден")
     fun noValidTokenSberGate() {
         val requestBody = SberGateRequestGenerator.baseRequest()
         val response = RestAssured
@@ -287,7 +287,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("f4c9eb2f-8270-40fa-8be1-19fd697ba794")
-    @DisplayName("Не валидный method_uuid в url. 406")
+    @DisplayName("406. Не валидный method_uuid в url")
     fun notValidMethodUuidSberGate() {
         val requestBody = SberGateRequestGenerator.baseRequest()
         //Выполнение POST-запроса
@@ -327,7 +327,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("9a4b67b2-7661-420f-afcf-dd291cf18944")
-    @DisplayName("Не передан method_uuid в url. 405")
+    @DisplayName("405. Не передан method_uuid в url")
     fun noMethodUuidSberGate() {
         val requestBody = SberGateRequestGenerator.baseRequest()
         //Выполнение POST-запроса
@@ -368,7 +368,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("9e3222a9-f266-4743-8d4b-8af1ebb52a06")
-    @DisplayName("202. Повторное проведение платежа с тем же invoice_id пока не вышел таймаут создания заказа.")
+    @DisplayName("202. Повторное проведение платежа с тем же invoice_id пока не вышел таймаут создания заказа")
     fun repeatInvoiceIdSuccess() {
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy()
         // Сохраняем invoice_id из первого запроса
@@ -394,7 +394,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             body = modifiedRequestRepeat
         )
 
-        responseRepeat.then().log().all()
+        responseRepeat.then()
             .statusCode(202)
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
@@ -407,7 +407,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("490c2844-035e-4f54-9202-9477f3a04168")
-    @DisplayName("423. Повторное проведение платежа с тем же invoice_id когда вышел таймаут создания заказа.")
+    @DisplayName("423. Повторное проведение платежа с тем же invoice_id когда вышел таймаут создания заказа")
     fun repeatInvoiceIderror() {
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             invoice_id = "123456789"
@@ -635,7 +635,6 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             body = modifiedRequest
         )
         response.then()
-            .log().all()
             .statusCode(202) // Проверяем статус-код
             .body(
                 JsonSchemaValidator.matchesJsonSchemaInClasspath(
@@ -648,7 +647,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
-    @DisplayName("Проверка обязательности полей. 400. no amount")
+    @DisplayName("400. Проверка обязательности полей. no amount")
     fun noAmount(){
         val noAmountRequestBody = SberGateRequestGenerator.noAmountRequest().copy()
         val response: Response = apiClient.post(
@@ -670,7 +669,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
-    @DisplayName("Проверка обязательности полей. 400. no mobile")
+    @DisplayName("400. Проверка обязательности полей. no mobile")
     fun noMobile(){
         val noMobileRequestBody = SberGateRequestGenerator.noMobileRequest().copy()
         val response: Response = apiClient.post(
@@ -692,7 +691,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
-    @DisplayName("Проверка обязательности полей. 400. no platform")
+    @DisplayName("400. Проверка обязательности полей. no platform")
     fun noPlatform(){
         val noPlatformRequestBody = SberGateRequestGenerator.noPlatformRequest().copy()
         val response: Response = apiClient.post(
@@ -714,7 +713,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("ab70782c-06b6-439c-bde4-e416e3228520")
-    @DisplayName("Проверка обязательности полей. 400. no invoice_id")
+    @DisplayName("400. Проверка обязательности полей. no invoice_id")
     fun noInvoiceId(){
         val noInvoiceIDRequestBody = SberGateRequestGenerator.noInvoiceIdRequest().copy()
         val response: Response = apiClient.post(
@@ -736,7 +735,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля amount: Строка, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля amount: Строка, объект, пустой массив, булево")
     @MethodSource("provideInvalidAmountValues")
     fun amountInvalidValuesTest(amountValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(amount = amountValue)
@@ -760,7 +759,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. amount = null")
+    @DisplayName("400. Валидации по типу данных. amount = null")
     fun amountNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(amount = null)
         val response: Response = apiClient.post(
@@ -782,7 +781,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля invoice_id: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля invoice_id: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidInvoiceIdValues")
     fun invoiceIdInvalidValuesTest(invoiceIdValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(invoice_id = invoiceIdValue)
@@ -806,7 +805,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. invoice_id = null")
+    @DisplayName("400. Валидации по типу данных. invoice_id = null")
     fun invoiceIdNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(invoice_id = null)
         val response: Response = apiClient.post(
@@ -828,7 +827,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля mobile: Целое число, строка, объект, пустой массив")
+    @DisplayName("400. Валидации по типу данных. Для поля mobile: Целое число, строка, объект, пустой массив")
     @MethodSource("provideInvalidMobileValues")
     fun mobileInvalidValuesTest(mobileValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(mobile = mobileValue)
@@ -852,7 +851,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. mobile = null")
+    @DisplayName("400. Валидации по типу данных. mobile = null")
     fun mobileNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(mobile = null)
         val response: Response = apiClient.post(
@@ -874,7 +873,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля platform: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля platform: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidPlatformValues")
     fun platformInvalidValuesTest(platformValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(platform = platformValue)
@@ -898,7 +897,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. platform = null")
+    @DisplayName("400. Валидации по типу данных. platform = null")
     fun platformNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(platform = null)
         val response: Response = apiClient.post(
@@ -920,7 +919,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля account_id: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля account_id: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidAccountIdValues")
     fun accountIdInvalidValuesTest(accountIdValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(account_id = accountIdValue)
@@ -944,7 +943,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. account_id = null")
+    @DisplayName("400. Валидации по типу данных. account_id = null")
     fun accountIdNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(account_id = null)
         val response: Response = apiClient.post(
@@ -967,7 +966,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля name: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля name: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidNameValues")
     fun nameInvalidValuesTest(nameValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(name = nameValue)
@@ -991,7 +990,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. name = null")
+    @DisplayName("400. Валидации по типу данных. name = null")
     fun nameNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(name = null)
         val response: Response = apiClient.post(
@@ -1013,7 +1012,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля payload: Целое число, строка, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля payload: Целое число, строка, булево")
     @MethodSource("provideInvalidPayloadValues")
     fun payloadInvalidValuesTest(payloadValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(payload = payloadValue)
@@ -1037,7 +1036,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload = null")
+    @DisplayName("400. Валидации по типу данных. payload = null")
     fun payloadNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(payload = null)
         val response: Response = apiClient.post(
@@ -1059,7 +1058,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля payload.key: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля payload.key: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidPayloadKeyValues")
     fun payloadKeyInvalidValuesTest(payloadKeyValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1089,7 +1088,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.key = null")
+    @DisplayName("400. Валидации по типу данных. payload.key = null")
     fun payloadToKeyNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             payload = listOf(
@@ -1103,7 +1102,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             path = basePath,
             body = modifiedRequest
         )
-        response.then().log().all()
+        response.then()
             .statusCode(400)
             .assertThat()
             .body(
@@ -1118,7 +1117,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля payload.value: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля payload.value: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidPayloadValueValues")
     fun payloadValueInvalidValuesTest(payloadValueValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1148,7 +1147,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.value = null")
+    @DisplayName("400. Валидации по типу данных. payload.value = null")
     fun payloadToValueNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             payload = listOf(
@@ -1177,7 +1176,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля phone: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля phone: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidPhoneValues")
     fun phoneInvalidValuesTest(phoneValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1218,7 +1217,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля email: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля email: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidEmailValues")
     fun emailInvalidValuesTest(emailValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1244,7 +1243,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. email = null")
+    @DisplayName("400. Валидации по типу данных. email = null")
     fun emailNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(email = null)
         val response: Response = apiClient.post(
@@ -1266,7 +1265,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля description: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля description: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidDescriptionValues")
     fun descriptionInvalidValuesTest(descriptionValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1292,7 +1291,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. description = null")
+    @DisplayName("400. Валидации по типу данных. description = null")
     fun descriptionNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(description = null)
         val response: Response = apiClient.post(
@@ -1314,7 +1313,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля fields: Целое число, строка, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля fields: Целое число, строка, булево")
     @MethodSource("provideInvalidFieldsValues")
     fun fieldsInvalidValuesTest(fieldsValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1340,7 +1339,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields = null")
+    @DisplayName("400. Валидации по типу данных. fields = null")
     fun fieldsNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(fields = null)
         val response: Response = apiClient.post(
@@ -1362,7 +1361,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля fields.successUrl: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля fields.successUrl: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidFieldsSuccessUrlValues")
     fun fieldsSuccessUrlInvalidValuesTest(fieldsSuccessUrlValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1393,7 +1392,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.successUrl = null")
+    @DisplayName("400. Валидации по типу данных. fields.successUrl = null")
     fun fieldsToSuccessUrlNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             fields = NullFields(
@@ -1421,7 +1420,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля fields.errorUrl: Целое число, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля fields.errorUrl: Целое число, объект, пустой массив, булево")
     @MethodSource("provideInvalidFieldsErrorUrlValues")
     fun fieldsErrorUrlInvalidValuesTest(fieldsErrorUrlValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1452,7 +1451,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.errorUrl = null")
+    @DisplayName("400. Валидации по типу данных. fields.errorUrl = null")
     fun fieldsToErrorUrlNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             fields = NullFields(
@@ -1480,7 +1479,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. Для поля fields.ttl: Число с плавающей точкой, строка, объект, пустой массив, булево")
+    @DisplayName("400. Валидации по типу данных. Для поля fields.ttl: Число с плавающей точкой, строка, объект, пустой массив, булево")
     @MethodSource("provideInvalidFieldsTtlValues")
     fun fieldsTtlInvalidValuesTest(fieldsTtlValue: Any?, description: String, expectedErrorMessage: String) {
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
@@ -1511,7 +1510,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.ttl = null")
+    @DisplayName("400. Валидации по типу данных. fields.ttl = null")
     fun fieldsToTtlNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
             fields = NullFields(
@@ -1540,7 +1539,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. invoice_id = 21 symbol")
+    @DisplayName("400. Другие валидации. invoice_id = 21 symbol")
     fun invoiceIdManySymbols(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             invoice_id = "123456789012345678901"
@@ -1564,7 +1563,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. email без @")
+    @DisplayName("400. Другие валидации. email без @")
     fun emailWithoutDog(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             email = "klepa_email.ru"
@@ -1588,7 +1587,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. email с пробелом")
+    @DisplayName("400. Другие валидации. email с пробелом")
     fun emailHaveAWhitespace(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             email = "klepa_e@ mail.ru"
@@ -1612,7 +1611,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. email с двумя точками")
+    @DisplayName("400. Другие валидации. email с двумя точками")
     fun emailWithDoublePoints(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             email = "klepa_e@mail..ru"
@@ -1636,7 +1635,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. phone с пробелом")
+    @DisplayName("400. Другие валидации. phone с пробелом")
     fun phoneHaveAWhitespace(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "7900 0000000"
@@ -1660,7 +1659,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. phone начинается с 9")
+    @DisplayName("400. Другие валидации. phone начинается с 9")
     fun phoneStartAtNine(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "99000000000"
@@ -1684,7 +1683,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. phone начинается с 6")
+    @DisplayName("400. Другие валидации. phone начинается с 6")
     fun phoneStartAtSix(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "69000000000"
@@ -1708,7 +1707,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("1e132b2c-e84b-45af-b282-313bd1d2736a")
-    @DisplayName("Другие валидации. 400. phone начинается с 7 + 11 цифр после")
+    @DisplayName("400. Другие валидации. phone начинается с 7 + 11 цифр после")
     fun phoneStartAtSevenPlusElevenNumbers(){
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             phone = "790000000000"
