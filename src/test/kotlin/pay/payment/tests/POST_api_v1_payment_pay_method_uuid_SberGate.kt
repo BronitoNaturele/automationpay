@@ -4,18 +4,22 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import configLogger
 import io.restassured.RestAssured
 import io.restassured.module.jsv.JsonSchemaValidator
+import io.restassured.path.json.JsonPath
 import io.restassured.response.Response
 import org.hamcrest.Matchers.equalTo
 import org.hamcrest.Matchers.hasItem
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import pay.xprojectdata.client.ApiClient
 import pay.xprojectdata.config.EnvironmentConfig
 import pay.xprojectdata.dto.request.*
 import pay.xprojectdata.dto.response.errorNoMethodPayMethodUuidResponseBodySberGate
 import pay.xprojectdata.dto.response.errorPayMethodUuidResponseBodySberGate
 import ru.testit.annotations.WorkItemIds
-
+import java.util.stream.Stream
 
 class POSTApiV1PaymentPayMethodUuidSberGate {
     private lateinit var apiClient: ApiClient
@@ -28,6 +32,133 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
         fun globalSetup() {
             configLogger.globalSetup()
         }
+
+        @JvmStatic
+        fun provideInvalidAmountValues(): Stream<Arguments> = Stream.of(
+            Arguments.of("1a!", "Строка с символами", "Поле amount должно быть числом."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле amount обязательно для заполнения."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле amount обязательно для заполнения."),
+            Arguments.of(false, "Булево значение", "Поле amount должно быть числом.")
+        )
+
+        @JvmStatic
+        fun provideInvalidInvoiceIdValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле invoice id должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле invoice id обязательно для заполнения."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле invoice id обязательно для заполнения."),
+            Arguments.of(false, "Булево значение", "Поле invoice id должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidMobileValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле Моб. номер должно иметь значение логического типа."),
+            Arguments.of("1a!", "Строка", "Поле Моб. номер должно иметь значение логического типа."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле Моб. номер обязательно для заполнения."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле Моб. номер обязательно для заполнения.")
+        )
+
+        @JvmStatic
+        fun provideInvalidPlatformValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле platform должно быть строкой.","Выбранное значение для platform ошибочно."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле platform обязательно для заполнения."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле platform обязательно для заполнения."),
+            Arguments.of(false, "Булево значение", "Поле platform должно быть строкой.", "Выбранное значение для platform ошибочно.")
+        )
+
+        @JvmStatic
+        fun provideInvalidAccountIdValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле account id должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле account id должно быть строкой."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле account id должно быть строкой.", "Поле account id имеет ошибочный формат."),
+            Arguments.of(false, "Булево значение", "Поле account id должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidNameValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле Имя должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле Имя должно быть строкой."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле Имя должно быть строкой.", "Поле account id имеет ошибочный формат."),
+            Arguments.of(false, "Булево значение", "Поле Имя должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidPayloadValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле payload должно быть массивом."),
+            Arguments.of("1a!", "Строка", "Поле payload должно быть массивом."),
+            Arguments.of(false, "Булево значение", "Поле payload должно быть массивом.")
+        )
+
+        @JvmStatic
+        fun provideInvalidPayloadKeyValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле payload.0.key должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле payload.0.key обязательно для заполнения."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле payload.0.key обязательно для заполнения."),
+            Arguments.of(false, "Булево значение", "Поле payload.0.key должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidPayloadValueValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле payload.0.value должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле payload.0.value должно быть строкой."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле payload.0.value должно быть строкой."),
+            Arguments.of(false, "Булево значение", "Поле payload.0.value должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidPhoneValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле Телефон должно быть строкой.", "Поле Телефон имеет ошибочный формат"),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле Телефон должно быть строкой.", "Поле Телефон имеет ошибочный формат."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле Телефон должно быть строкой.", "Поле Телефон имеет ошибочный формат."),
+            Arguments.of(false, "Булево значение", "Поле Телефон должно быть строкой.", "Поле Телефон имеет ошибочный формат.")
+        )
+
+        @JvmStatic
+        fun provideInvalidEmailValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле E-Mail адрес должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле E-Mail адрес должно быть строкой."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле E-Mail адрес должно быть строкой."),
+            Arguments.of(false, "Булево значение", "Поле E-Mail адрес должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidDescriptionValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле Описание должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле Описание должно быть строкой."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле Описание должно быть строкой."),
+            Arguments.of(false, "Булево значение", "Поле Описание должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidFieldsValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле fields должно быть массивом."),
+            Arguments.of("1a!", "Строка", "Поле fields должно быть массивом."),
+            Arguments.of(false, "Булево значение", "Поле fields должно быть массивом.")
+        )
+
+        @JvmStatic
+        fun provideInvalidFieldsSuccessUrlValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле fields.success url должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле fields.success url должно быть строкой."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле fields.success url должно быть строкой."),
+            Arguments.of(false, "Булево значение", "Поле fields.success url должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidFieldsErrorUrlValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(2, "Целое число", "Поле fields.error url должно быть строкой."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле fields.error url должно быть строкой."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле fields.error url должно быть строкой."),
+            Arguments.of(false, "Булево значение", "Поле fields.error url должно быть строкой.")
+        )
+
+        @JvmStatic
+        fun provideInvalidFieldsTtlValues(): Stream<Arguments> = Stream.of(
+            Arguments.of(1.1, "Число с плавающей точкой", "Поле fields.ttl должно быть целым числом.","fields.ttl less than the minimum value."),
+            Arguments.of("1a!", "Строка", "Поле fields.ttl должно быть целым числом."),
+            Arguments.of(mapOf<String, Any>(), "Пустой объект", "Поле fields.ttl должно быть целым числом.", "fields.ttl is greater than the maximum allowed."),
+            Arguments.of(listOf<Any>(), "Пустой массив", "Поле fields.ttl должно быть целым числом.", "fields.ttl is greater than the maximum allowed."),
+            Arguments.of(false, "Булево значение", "Поле fields.ttl должно быть целым числом.", "fields.ttl less than the minimum value.")
+        )
     }
 
     @BeforeEach
@@ -237,8 +368,47 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("9e3222a9-f266-4743-8d4b-8af1ebb52a06")
-    @DisplayName("202. Повторное проведение платежа с тем же invoice_id")
-    fun repeatInvoiceId() {
+    @DisplayName("202. Повторное проведение платежа с тем же invoice_id пока не вышел таймаут создания заказа.")
+    fun repeatInvoiceIdSuccess() {
+        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy()
+        // Сохраняем invoice_id из первого запроса
+        val firstInvoiceId = modifiedRequest.invoice_id
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = modifiedRequest
+        )
+
+        response.then()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+
+        val modifiedRequestRepeat = SberGateRequestGenerator.baseRequest().copy(
+            invoice_id = firstInvoiceId
+        )
+        val responseRepeat: Response = apiClient.post(
+            path = basePath,
+            body = modifiedRequestRepeat
+        )
+
+        responseRepeat.then().log().all()
+            .statusCode(202)
+            .body(
+                JsonSchemaValidator.matchesJsonSchemaInClasspath(
+                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                )
+            )
+    }
+
+    @Test
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("490c2844-035e-4f54-9202-9477f3a04168")
+    @DisplayName("423. Повторное проведение платежа с тем же invoice_id когда вышел таймаут создания заказа.")
+    fun repeatInvoiceIderror() {
         val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
             invoice_id = "123456789"
         )
@@ -251,31 +421,12 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
 
         //Валидация ответа (единая цепочка)
         response.then()
-            .statusCode(202)
+            .statusCode(423)
             .body(
-                JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
+                "error_message", equalTo("Транзакция уже обработана"),
+                "error_code", equalTo("S0.000013"),
+                "type_error", equalTo("LOCKED")
                 )
-            )
-
-        val modifiedRequestRepeatId = SberGateRequestGenerator.baseRequest().copy(
-            invoice_id = "123456789"
-        )
-
-        val responseRepeat: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequestRepeatId,
-            headers = emptyMap()
-        )
-
-        responseRepeat.then()
-            .statusCode(202)
-            .body(
-                JsonSchemaValidator.matchesJsonSchemaInClasspath(
-                    "pay.payment.jsonschema/POST_api_v1_payment_pay_method_uuid_SberGate.json"
-                )
-            )
-
     }
 
     @Test
@@ -581,39 +732,19 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. amount = `1a!`")
-    fun amountString(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = "1a!")
+    @DisplayName("Валидации по типу данных. 400. Для поля amount: Строка, объект, пустой массив, булево")
+    @MethodSource("provideInvalidAmountValues")
+    fun amountInvalidValuesTest(amountValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(amount = amountValue)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.amount", hasItem("Поле amount должно быть числом.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. amount = `{}`")
-    fun amountObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -621,52 +752,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.amount", hasItem("Поле amount обязательно для заполнения.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. amount = empty array")
-    fun amountEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.amount", hasItem("Поле amount обязательно для заполнения.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. amount = false")
-    fun amountFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(amount = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.amount", hasItem("Поле amount должно быть числом."),
-                "errors.amount", hasItem("Поле amount должно быть не меньше 0.01.")
+                "errors.amount", hasItem(expectedErrorMessage)
             )
     }
 
@@ -692,39 +778,19 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. invoice_id = 1")
-    fun invoiceIdInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = 1)
+    @DisplayName("Валидации по типу данных. 400. Для поля invoice_id: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidInvoiceIdValues")
+    fun invoiceIdInvalidValuesTest(invoiceIdValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(invoice_id = invoiceIdValue)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.invoice_id", hasItem("Поле invoice id должно быть строкой.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. invoice_id = {}")
-    fun invoiceIdObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -732,51 +798,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.invoice_id", hasItem("Поле invoice id обязательно для заполнения.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. invoice_id = empty array")
-    fun invoiceIdEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.invoice_id", hasItem("Поле invoice id обязательно для заполнения.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. invoice_id = false")
-    fun invoiceIdFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(invoice_id = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.invoice_id", hasItem("Поле invoice id должно быть строкой.")
+                "errors.invoice_id", hasItem(expectedErrorMessage)
             )
     }
 
@@ -802,39 +824,19 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. mobile = 2")
-    fun mobileInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = 2)
+    @DisplayName("Валидации по типу данных. 400. Для поля mobile: Целое число, строка, объект, пустой массив")
+    @MethodSource("provideInvalidMobileValues")
+    fun mobileInvalidValuesTest(mobileValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(mobile = mobileValue)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.mobile", hasItem("Поле Моб. номер должно иметь значение логического типа.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. mobile = `1a!`")
-    fun mobileString(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = "1a!")
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -842,51 +844,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.mobile", hasItem("Поле Моб. номер должно иметь значение логического типа.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. mobile = {}")
-    fun mobileObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.mobile", hasItem("Поле Моб. номер обязательно для заполнения.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. mobile = empty array")
-    fun mobileEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(mobile = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.mobile", hasItem("Поле Моб. номер обязательно для заполнения.")
+                "errors.mobile", hasItem(expectedErrorMessage)
             )
     }
 
@@ -912,40 +870,19 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. platform = 1")
-    fun platformInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = 1)
+    @DisplayName("Валидации по типу данных. 400. Для поля platform: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidPlatformValues")
+    fun platformInvalidValuesTest(platformValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(platform = platformValue)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.platform", hasItem("Поле platform должно быть строкой."),
-                "errors.platform", hasItem("Выбранное значение для platform ошибочно.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. platform = {}")
-    fun platformObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -953,52 +890,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.platform", hasItem("Поле platform обязательно для заполнения.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. platform = empty array")
-    fun platformEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.platform", hasItem("Поле platform обязательно для заполнения.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. platform = false")
-    fun platformFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(platform = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.platform", hasItem("Поле platform должно быть строкой."),
-                "errors.platform", hasItem("Выбранное значение для platform ошибочно.")
+                "errors.platform", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1024,40 +916,19 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. account_id = 1")
-    fun accountIdInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = 1)
+    @DisplayName("Валидации по типу данных. 400. Для поля account_id: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidAccountIdValues")
+    fun accountIdInvalidValuesTest(accountIdValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(account_id = accountIdValue)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.account_id", hasItem("Поле account id должно быть строкой."),
-                "errors.account_id", hasItem("Поле account id имеет ошибочный формат.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. account_id = {}")
-    fun accountIdObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1065,54 +936,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.account_id", hasItem("Поле account id должно быть строкой."),
-                "errors.account_id", hasItem("Поле account id имеет ошибочный формат.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. account_id = empty array")
-    fun accountIdEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.account_id", hasItem("Поле account id должно быть строкой."),
-                "errors.account_id", hasItem("Поле account id имеет ошибочный формат.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. account_id = false")
-    fun accountIdFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(account_id = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.account_id", hasItem("Поле account id должно быть строкой."),
-                "errors.account_id", hasItem("Поле account id имеет ошибочный формат.")
+                "errors.account_id", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1139,39 +963,19 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. name = 1")
-    fun nameInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = 1)
+    @DisplayName("Валидации по типу данных. 400. Для поля name: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidNameValues")
+    fun nameInvalidValuesTest(nameValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(name = nameValue)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.name", hasItem("Поле Имя должно быть строкой.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. name = {}")
-    fun nameObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1179,51 +983,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.name", hasItem("Поле Имя должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. name = empty array")
-    fun nameEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.name", hasItem("Поле Имя должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. name = false")
-    fun nameFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(name = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.name", hasItem("Поле Имя должно быть строкой.")
+                "errors.name", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1249,39 +1009,19 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload = 1")
-    fun payloadInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(payload = 1)
+    @DisplayName("Валидации по типу данных. 400. Для поля payload: Целое число, строка, булево")
+    @MethodSource("provideInvalidPayloadValues")
+    fun payloadInvalidValuesTest(payloadValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(payload = payloadValue)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload = `1a!`")
-    fun payloadString(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(payload = "1a!")
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1289,29 +1029,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload = false")
-    fun payloadFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(payload = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
+                "errors.payload", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1337,49 +1055,25 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.key = 1")
-    fun payloadToKeyInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                key = 1,
+    @DisplayName("Валидации по типу данных. 400. Для поля payload.key: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidPayloadKeyValues")
+    fun payloadKeyInvalidValuesTest(payloadKeyValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            payload = listOf(NullPayloadItem(
+                key = payloadKeyValue,
                 value = "testValue"
             )
+          )
         )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.key = {}")
-    fun payloadToKeyObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                    key = {},
-                    value = "testValue"
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1387,61 +1081,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.key = empty array")
-    fun payloadToKeyEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                    key = emptyList<Any?>(),
-                    value = "testValue"
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.key = false")
-    fun payloadToKeyFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                    key = false,
-                    value = "testValue"
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
+                "errors.'payload.0.key'", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1452,69 +1092,47 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @DisplayName("Валидации по типу данных. 400. payload.key = null")
     fun payloadToKeyNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
-            payload = NullPayloadItem(
+            payload = listOf(
+                NullPayloadItem(
                     key = null,
                     value = "testValue"
             )
         )
+        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
+        response.then().log().all()
             .statusCode(400)
             .assertThat()
             .body(
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
+                "errors.'payload.0.key'", hasItem("Поле payload.0.key обязательно для заполнения.")
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.value = 1")
-    fun payloadToValueInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                    key = "testKey",
-                    value = 1
+    @DisplayName("Валидации по типу данных. 400. Для поля payload.value: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidPayloadValueValues")
+    fun payloadValueInvalidValuesTest(payloadValueValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            payload = listOf(NullPayloadItem(
+                key = "testKey",
+                value = payloadValueValue
+            )
             )
         )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.value = {}")
-    fun payloadToValueObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                    key = "testKey",
-                    value = {}
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1522,61 +1140,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.value = empty array")
-    fun payloadToValueEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                    key = "testKey",
-                    value = emptyList<Any?>()
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. payload.value = false")
-    fun payloadToValueFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            payload = PayloadItem(
-                    key = "testKey",
-                    value = false
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
+                "errors.'payload.0.value'", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1587,11 +1151,13 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
     @DisplayName("Валидации по типу данных. 400. payload.value = null")
     fun payloadToValueNull(){
         val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
-            payload = NullPayloadItem(
+            payload = listOf(
+                NullPayloadItem(
                     key = "testKey",
                     value = null
             )
         )
+        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
@@ -1603,67 +1169,66 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.payload", hasItem("Поле payload должно быть массивом.")
+                "errors.'payload.0.value'", hasItem("Поле payload.0.value должно быть строкой.")
+            )
+    }
+
+    @ParameterizedTest
+    @Tag("regression")
+    @Tag("smoke")
+    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
+    @DisplayName("Валидации по типу данных. 400. Для поля phone: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidPhoneValues")
+    fun phoneInvalidValuesTest(phoneValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            phone = phoneValue
+            )
+        val response: Response = apiClient.post(
+            path = basePath,
+            body = modifiedRequest
+        )
+
+        response.then()
+            .statusCode(400)
+            .assertThat()
+            .body(
+                "error_code", equalTo(400),
+                "error_message", equalTo("Не верные переданные данные в апи"),
+                "type_error", equalTo("BAD_REQUEST"),
+                "errors.phone", hasItem(expectedErrorMessage)
             )
     }
 
     @Test
     @Tag("regression")
     @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. phone = 1")
-    fun phoneInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = 1)
+    @WorkItemIds("a64573aa-05f7-490d-a2ea-08b2038511cf")
+    @DisplayName("202. Проверка nullable полей. phone = null")
+    fun phoneNull(){
+        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = null)
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
         response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.phone", hasItem("Поле Телефон должно быть строкой."),
-                "errors.phone", hasItem("Поле Телефон имеет ошибочный формат.")
-            )
+            .statusCode(202)
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. phone = {}")
-    fun phoneObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = {})
+    @DisplayName("Валидации по типу данных. 400. Для поля email: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidEmailValues")
+    fun emailInvalidValuesTest(emailValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            email = emailValue
+        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.phone", hasItem("Поле Телефон должно быть строкой."),
-                "errors.phone", hasItem("Поле Телефон имеет ошибочный формат.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. phone = empty array")
-    fun phoneEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1671,119 +1236,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.phone", hasItem("Поле Телефон должно быть строкой."),
-                "errors.phone", hasItem("Поле Телефон имеет ошибочный формат.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. phone = false")
-    fun phoneFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(phone = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.phone", hasItem("Поле Телефон должно быть строкой."),
-                "errors.phone", hasItem("Поле Телефон имеет ошибочный формат.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. email = 1")
-    fun emailInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = 1)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.email", hasItem("Поле E-Mail адрес должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. email = {}")
-    fun emailObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.email", hasItem("Поле E-Mail адрес должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. email = empty array")
-    fun emailEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.email", hasItem("Поле E-Mail адрес должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. email = false")
-    fun emailFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(email = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.email", hasItem("Поле E-Mail адрес должно быть строкой.")
+                "errors.email", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1809,39 +1262,21 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. description = 1")
-    fun descriptionInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = 1)
+    @DisplayName("Валидации по типу данных. 400. Для поля description: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidDescriptionValues")
+    fun descriptionInvalidValuesTest(descriptionValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            description = descriptionValue
+        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.description", hasItem("Поле Описание должно быть строкой.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. description = {}")
-    fun descriptionObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = {})
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1849,51 +1284,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.description", hasItem("Поле Описание должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. description = empty array")
-    fun descriptionEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = emptyList<Any?>())
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.description", hasItem("Поле Описание должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. description = false")
-    fun descriptionFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(description = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.description", hasItem("Поле Описание должно быть строкой.")
+                "errors.description", hasItem(expectedErrorMessage)
             )
     }
 
@@ -1919,39 +1310,21 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields = 1")
-    fun fieldsInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(fields = 1)
+    @DisplayName("Валидации по типу данных. 400. Для поля fields: Целое число, строка, булево")
+    @MethodSource("provideInvalidFieldsValues")
+    fun fieldsInvalidValuesTest(fieldsValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            fields = fieldsValue
+        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.fields", hasItem("Поле fields должно быть массивом.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields = `1a!`")
-    fun fieldsString(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(fields = "1a!")
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -1959,29 +1332,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors.fields", hasItem("Поле fields должно быть массивом.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields = false")
-    fun fieldsFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(fields = false)
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors.fields", hasItem("Поле fields должно быть массивом.")
+                "errors.fields", hasItem(expectedErrorMessage)
             )
     }
 
@@ -2007,79 +1358,26 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.successUrl = 1")
-    fun fieldsToSuccessUrlInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = 1,
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = 3600
+    @DisplayName("Валидации по типу данных. 400. Для поля fields.successUrl: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidFieldsSuccessUrlValues")
+    fun fieldsSuccessUrlInvalidValuesTest(fieldsSuccessUrlValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            fields = NullFields(
+                    successUrl = fieldsSuccessUrlValue,
+                    errorUrl = "https://uat-pay.av.ru//error/123456",
+                    ttl = 3600
+                )
             )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.successUrl\"]", hasItem("Поле fields.success url должно быть строкой.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.successUrl = {}")
-    fun fieldsToSuccessUrlObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = {},
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = 3600
-            )
-        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.successUrl\"]", hasItem("Поле fields.success url должно быть строкой.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.successUrl = empty array")
-    fun fieldsToSuccessUrlEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = emptyList<Any?>(),
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = 3600
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -2087,35 +1385,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.successUrl\"]", hasItem("Поле fields.success url должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.successUrl = false")
-    fun fieldsToSuccessUrlFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = false,
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = 3600
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.successUrl\"]", hasItem("Поле fields.success url должно быть строкой.")
+                "errors.'fields.successUrl'", hasItem(expectedErrorMessage)
             )
     }
 
@@ -2147,79 +1417,26 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.errorUrl = 1")
-    fun fieldsToErrorUrlInteger(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
+    @DisplayName("Валидации по типу данных. 400. Для поля fields.errorUrl: Целое число, объект, пустой массив, булево")
+    @MethodSource("provideInvalidFieldsErrorUrlValues")
+    fun fieldsErrorUrlInvalidValuesTest(fieldsErrorUrlValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = 1,
+                errorUrl = fieldsErrorUrlValue,
                 ttl = 3600
             )
         )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.errorUrl\"]", hasItem("Поле fields.error url должно быть строкой.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.errorUrl = {}")
-    fun fieldsToErrorUrlObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = {},
-                ttl = 3600
-            )
-        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.errorUrl\"]", hasItem("Поле fields.error url должно быть строкой.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.errorUrl = empty array")
-    fun fieldsToErrorUrlEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = emptyList<Any?>(),
-                ttl = 3600
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -2227,35 +1444,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.errorUrl\"]", hasItem("Поле fields.error url должно быть строкой.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.errorUrl = false")
-    fun fieldsToErrorUrlFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = false,
-                ttl = 3600
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.errorUrl\"]", hasItem("Поле fields.error url должно быть строкой.")
+                "errors.'fields.errorUrl'", hasItem(expectedErrorMessage)
             )
     }
 
@@ -2287,80 +1476,26 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
             )
     }
 
-    @Test
+    @ParameterizedTest
     @Tag("regression")
     @Tag("smoke")
     @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.ttl = 1.1")
-    fun fieldsToTtlFloat(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
+    @DisplayName("Валидации по типу данных. 400. Для поля fields.ttl: Число с плавающей точкой, строка, объект, пустой массив, булево")
+    @MethodSource("provideInvalidFieldsTtlValues")
+    fun fieldsTtlInvalidValuesTest(fieldsTtlValue: Any?, description: String, expectedErrorMessage: String) {
+        val modifiedRequest = SberGateNullFieldsRequestGenerator.baseRequest().copy(
+            fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
                 errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = 1.1
+                ttl = fieldsTtlValue
             )
         )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.ttl\"]", hasItem("Поле fields.ttl должно быть целым числом."),
-                "errors[\"fields.ttl\"]", hasItem("fields.ttl less than the minimum value.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.ttl = `1a!`")
-    fun fieldsToTtlString(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = "1a!"
-            )
-        )
         val response: Response = apiClient.post(
             path = basePath,
             body = modifiedRequest
         )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.ttl\"]", hasItem("Поле fields.ttl должно быть целым числом.")
-            )
-    }
 
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.ttl = {}")
-    fun fieldsToTtlObject(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = {}
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
         response.then()
             .statusCode(400)
             .assertThat()
@@ -2368,66 +1503,7 @@ class POSTApiV1PaymentPayMethodUuidSberGate {
                 "error_code", equalTo(400),
                 "error_message", equalTo("Не верные переданные данные в апи"),
                 "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.ttl\"]", hasItem("Поле fields.ttl должно быть целым числом."),
-                "errors[\"fields.ttl\"]", hasItem("fields.ttl is greater than the maximum allowed.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.ttl = empty array")
-    fun fieldsToTtlEmptyArray(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = emptyList<Any?>()
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.ttl\"]", hasItem("Поле fields.ttl должно быть целым числом."),
-                "errors[\"fields.ttl\"]", hasItem("fields.ttl is greater than the maximum allowed.")
-            )
-    }
-
-    @Test
-    @Tag("regression")
-    @Tag("smoke")
-    @WorkItemIds("21a51eeb-112b-4044-abae-6eaa3b48d36b")
-    @DisplayName("Валидации по типу данных. 400. fields.ttl = false")
-    fun fieldsToTtlFalse(){
-        val modifiedRequest = SberGateRequestGenerator.baseRequest().copy(
-            fields = Fields(
-                successUrl = "https://uat-pay.av.ru/success/123456",
-                errorUrl = "https://uat-pay.av.ru//error/123456",
-                ttl = false
-            )
-        )
-        val response: Response = apiClient.post(
-            path = basePath,
-            body = modifiedRequest
-        )
-        response.then()
-            .statusCode(400)
-            .assertThat()
-            .body(
-                "error_code", equalTo(400),
-                "error_message", equalTo("Не верные переданные данные в апи"),
-                "type_error", equalTo("BAD_REQUEST"),
-                "errors[\"fields.ttl\"]", hasItem("Поле fields.ttl должно быть целым числом."),
-                "errors[\"fields.ttl\"]", hasItem("fields.ttl less than the minimum value.")
+                "errors.'fields.ttl'", hasItem(expectedErrorMessage)
             )
     }
 

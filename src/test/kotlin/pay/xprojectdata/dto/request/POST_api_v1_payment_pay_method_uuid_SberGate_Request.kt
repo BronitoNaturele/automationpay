@@ -51,7 +51,11 @@ object SberGateRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                PayloadItem(
+                key = "testKey",
+                value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
@@ -70,7 +74,11 @@ object SberGateRequestGenerator {
             platform = "WEB",
             account_id = "1-2Q4PVM7Z",
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                PayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
@@ -90,7 +98,11 @@ object SberGateRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                PayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
@@ -110,7 +122,11 @@ object SberGateRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                PayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
@@ -130,7 +146,11 @@ object SberGateRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                PayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
@@ -149,7 +169,11 @@ object SberGateRequestGenerator {
             mobile = false,
             platform = "WEB",
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                PayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
@@ -209,7 +233,11 @@ object SberGateNullFieldsRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(NullPayloadItem("testKey", "testValue")),
+            payload = listOf(
+                NullPayloadItem(
+                key = "testKey",
+                value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
@@ -228,11 +256,15 @@ object SberGateNullFieldsRequestGenerator {
             platform = "WEB",
             account_id = "1-2Q4PVM7Z",
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                NullPayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
-            fields = Fields(
+            fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
                 errorUrl = "https://uat-pay.av.ru//error/123456",
                 ttl = 3600
@@ -248,11 +280,15 @@ object SberGateNullFieldsRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                NullPayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
-            fields = Fields(
+            fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
                 errorUrl = "https://uat-pay.av.ru//error/123456",
                 ttl = 3600
@@ -268,11 +304,15 @@ object SberGateNullFieldsRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                NullPayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
-            fields = Fields(
+            fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
                 errorUrl = "https://uat-pay.av.ru//error/123456",
                 ttl = 3600
@@ -288,11 +328,15 @@ object SberGateNullFieldsRequestGenerator {
             account_id = "1-2Q4PVM7Z",
             //secure_pay = null,
             name = "randomName",
-            payload = listOf(PayloadItem("testKey", "testValue")),
+            payload = listOf(
+                NullPayloadItem(
+                    key = "testKey",
+                    value = "testValue")
+            ),
             phone = "79000000000",
             email = "klepa_e@mail.ru",
             description = "TestDeadCow",
-            fields = Fields(
+            fields = NullFields(
                 successUrl = "https://uat-pay.av.ru/success/123456",
                 errorUrl = "https://uat-pay.av.ru//error/123456",
                 ttl = 3600
@@ -305,3 +349,4 @@ object SberGateNullFieldsRequestGenerator {
         return "$basePath?method_uuid=$methodUuid"
     }
 }
+
