@@ -53,6 +53,8 @@ tasks.test {
     systemProperties["allure.results.directory"] = "build/allure-results"
     systemProperties["allure.report.directory"] = "build/allure-report"
     systemProperty("API_TOKEN", project.findProperty("API_TOKEN"))
+    // Добавляем передачу securePayValue из gradle.properties
+    systemProperty("securePayValue", project.findProperty("securePayValue"))
 
     // Настройка генерации XML-отчётов для TestIT CLI
     reports {
